@@ -11,7 +11,8 @@
 std::mutex reg_list_mutex;
 std::list<oltiot_comm_reg_node_t> reg_list;
 
-AsyncRetryManager g_retry_manager(10); // 30 秒重传间隔
+// 参数: 最小间隔(5s), 递增量(5s), 最大间隔(60s)
+AsyncRetryManager g_retry_manager(5, 5, 60);
 
 void oltiot_msg_handle_reg(const oltiot_msg_reg_t* reg, oltiot_msg_reg_cb cb, void* arg)
 {
@@ -342,8 +343,17 @@ int oltiot_send_message(const oltiot_msg_req_t& req)
     return rc;
 }
 
-AsyncRetryManager::AsyncRetryManager(int retry_interval_sec)
-    : stop_flag_(false), retry_interval_(retry_interval_sec) {}
+AsyncRetryManager::AsyncRetryManager(int min_interval_sec, int increment_sec, int max_interval_sec)
+    : stop_flag_(false), 
+      min_interval_(min_interval_sec),
+      increment_(increment_sec),
+      max_interval_(max_interval_sec)
+{
+    // 确保最小间隔不大于最大间隔
+    if (min_interval_ > max_interval_) {
+        min_interval_ = max_interval_;
+    }
+}
 
 AsyncRetryManager::~AsyncRetryManager() {
     stop();
@@ -380,18 +390,30 @@ void AsyncRetryManager::run_worker() {
 
         // 1. 检查哪些消息需要重传
         {
-            std::unique_lock<std::mutex> lock(mutex_);
+            std::unique_lock<std::mutex> lock(mutex_); 
             for (auto it = in_flight_messages_.begin(); it != in_flight_messages_.end(); ++it) {
+                
+                long long current_delay_sec = min_interval_.count() + (it->second.retry_count * increment_.count());
+                
+                if (current_delay_sec > max_interval_.count()) {
+                    current_delay_sec = max_interval_.count();
+                }
+                
+                // 构造 chrono::seconds 对象用于比较
+                std::chrono::seconds required_delay(current_delay_sec);
+
                 auto time_since_sent = now - it->second.last_sent_time;
                 
-                if (time_since_sent > retry_interval_) {
-                    // 超时了，准备重传
+                if (time_since_sent >= required_delay) { // ✅ 使用动态计算的间隔
                     std::cout << "[RetryManager] Resending message for method: " 
-                              << it->second.req.method << ", SEQ: " << it->second.req.seq << std::endl;
+                              << it->second.req.method << ", SEQ: " << it->second.req.seq 
+                              << ". Delay: " << required_delay.count() << "s" 
+                              << ". Count: " << it->second.retry_count + 1 << std::endl;
                     
                     messages_to_resend.push_back(it->second.req);
-                    // 更新时间戳
+                    
                     it->second.last_sent_time = now;
+                    it->second.retry_count++;
                 }
             }
         } // 互斥锁在这里释放
@@ -412,6 +434,7 @@ void AsyncRetryManager::add_for_retry(const oltiot_msg_req_t& req) {
     RetransmitInfo info;
     info.req = req; // 存储副本
     info.last_sent_time = std::chrono::steady_clock::now();
+    info.retry_count = 0; // ✅ 第一次发送（未重试），计数为 0
 
     {
         std::lock_guard<std::mutex> lock(mutex_);

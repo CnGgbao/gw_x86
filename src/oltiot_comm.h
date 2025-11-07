@@ -94,6 +94,7 @@ extern std::list<oltiot_comm_reg_node_t> reg_list;
 struct RetransmitInfo {
     oltiot_msg_req_t req; // 存储完整的请求消息
     std::chrono::steady_clock::time_point last_sent_time; // 上次发送时间
+    int retry_count;
 };
 
 /**
@@ -102,7 +103,7 @@ struct RetransmitInfo {
  */
 class AsyncRetryManager {
 public:
-    AsyncRetryManager(int retry_interval_sec = 30);
+    AsyncRetryManager(int min_interval_sec, int increment_sec, int max_interval_sec);
     ~AsyncRetryManager();
 
     void start();
@@ -117,7 +118,9 @@ private:
     std::condition_variable cv_;
     std::atomic<bool> stop_flag_;
     std::thread worker_thread_;
-    std::chrono::seconds retry_interval_;
+    std::chrono::seconds min_interval_;    // 最小重试间隔（秒）
+    std::chrono::seconds increment_;       // 每次递增的秒数
+    std::chrono::seconds max_interval_;    // 最大重试间隔（秒）
     
     std::unordered_map<std::string, RetransmitInfo> in_flight_messages_;
 };
