@@ -140,6 +140,7 @@ int oltiot_message_arrived(const std::string& topicName, const std::string& payl
 
     std::lock_guard<std::mutex> lock(reg_list_mutex);
     for (auto& node : reg_list) {
+        //std::cout<<"node.reg.method: "<<node.reg.method<<", msg->method: "<<msg->method<<std::endl;
         if (node.reg.method != msg->method)
             continue;
 

@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <oltiot_comm.h>
+#include <mutex>
 
 int oltiot_read_pids(std::string did, int sid, int pid);
 int oltiot_write_pids(std::string did, int sid, int pid, int val);
@@ -14,6 +15,21 @@ int oltiot_dev_del_sub(std::string did);
 int oltiot_dev_del_allsub();
 int oltiot_dev_gettime(long long timestamp);
 std::vector<dev_item_t> get_all_sub_dev_info();
+
+
+static std::string g_latest_join_seq;
+static std::mutex g_seq_mutex;
+
+
+void set_latest_join_seq(const std::string& seq) {
+    std::lock_guard<std::mutex> lock(g_seq_mutex);
+    g_latest_join_seq = seq;
+}
+std::string get_latest_join_seq() {
+    std::lock_guard<std::mutex> lock(g_seq_mutex);
+    return g_latest_join_seq;
+}
+
 void oltiot_ack_resp(const oltiot_msg_req_t* req, int result) {
     oltiot_msg_resp_t to_resp;
     oltiot_msg_resp_new(req, &to_resp);
@@ -267,6 +283,11 @@ void dev_disc_handle(const oltiot_msg_req_t* req, void* arg) {
         return;
     }
 
+    if (!req->seq.empty()) {
+    set_latest_join_seq(req->seq);
+    std::cout << "[dev_addsub_handle] Set latest join seq: " << req->seq << std::endl;
+    }
+
     auto& doc = *req->params;
     // 解析 type
     if (!doc.HasMember("type") || !doc["type"].IsInt()) {
@@ -325,6 +346,11 @@ void dev_addsub_handle(const oltiot_msg_req_t* req, void* arg) {
         result = OLTIOT_COMM_PARM_ERROR;
         oltiot_ack_resp(req, result);
         return;
+    }
+
+    if (!req->seq.empty()) {
+    set_latest_join_seq(req->seq);
+    std::cout << "[dev_addsub_handle] Set latest join seq: " << req->seq << std::endl;
     }
 
     auto& doc = *req->params;
@@ -800,7 +826,7 @@ int oltiot_report_dev(const std::vector<dev_item_t>& devices)
     req.src    = oltiot_devobj_get_did();
     req.dst    = "0001000000000000";
     req.ver    = "V1.0";
-    req.seq    = generate_seq();
+    req.seq    = get_latest_join_seq();
 
     // 创建 params 文档
     req.params = std::make_shared<Document>();

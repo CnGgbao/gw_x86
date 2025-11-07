@@ -37,6 +37,7 @@ CMakeFiles/gw_x86.dir/main.cpp.o: /home/cyg/mqtt_x86/mqtt.client/gw_x86/src/main
   /usr/include/assert.h \
   /usr/include/c++/13/algorithm \
   /usr/include/c++/13/array \
+  /usr/include/c++/13/atomic \
   /usr/include/c++/13/backward/auto_ptr.h \
   /usr/include/c++/13/backward/binders.h \
   /usr/include/c++/13/bit \
@@ -1525,15 +1526,15 @@ CMakeFiles/gw_x86.dir/oltiot_devobj.cpp.o: /home/cyg/mqtt_x86/mqtt.client/gw_x86
 
 /usr/include/c++/13/cstddef:
 
-/usr/local/paho-mqtt-cpp-x86/include/mqtt/subscribe_options.h:
-
-/usr/include/c++/13/bits/uses_allocator.h:
-
-/usr/include/c++/13/bits/postypes.h:
-
 /usr/include/c++/13/cstdint:
 
 /usr/include/c++/13/cstdlib:
+
+/usr/include/c++/13/bits/postypes.h:
+
+/usr/local/paho-mqtt-cpp-x86/include/mqtt/subscribe_options.h:
+
+/usr/include/c++/13/bits/uses_allocator.h:
 
 /usr/include/c++/13/bits/shared_ptr_atomic.h:
 
@@ -1614,8 +1615,6 @@ CMakeFiles/gw_x86.dir/oltiot_devobj.cpp.o: /home/cyg/mqtt_x86/mqtt.client/gw_x86
 /usr/include/c++/13/bits/cxxabi_init_exception.h:
 
 /usr/include/c++/13/typeinfo:
-
-/usr/include/c++/13/bits/basic_string.h:
 
 /usr/include/c++/13/bits/cxxabi_forced.h:
 
@@ -1710,6 +1709,10 @@ CMakeFiles/gw_x86.dir/oltiot_devobj.cpp.o: /home/cyg/mqtt_x86/mqtt.client/gw_x86
 /usr/include/c++/13/bits/shared_ptr.h:
 
 /home/cyg/mqtt_x86/mqtt.client/rapidjson/include/rapidjson/internal/diyfp.h:
+
+/usr/include/c++/13/bits/basic_string.h:
+
+/usr/include/c++/13/atomic:
 
 /usr/include/c++/13/bits/stl_queue.h:
 
