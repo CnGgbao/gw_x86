@@ -52,7 +52,6 @@ struct dev_item_t {
 };
 
 void oltiot_devobj_register();
-int oltiot_send_message(const oltiot_msg_req_t& req);
 int oltiot_get_time(oltiot_msg_req_t& req);
 int oltiot_gateway_reg(const gateway_base_info_t& properties);
 int oltiot_report_pids(const property_item_t& prop);

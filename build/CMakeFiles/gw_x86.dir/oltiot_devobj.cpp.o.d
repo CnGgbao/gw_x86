@@ -272,4 +272,5 @@ CMakeFiles/gw_x86.dir/oltiot_devobj.cpp.o: \
  /usr/include/c++/13/bits/enable_special_members.h \
  /usr/include/c++/13/array /usr/include/c++/13/compare \
  /usr/local/paho-mqtt-cpp-x86/include/mqtt/disconnect_options.h \
+ /usr/include/c++/13/atomic \
  /home/cyg/mqtt_x86/mqtt.client/gw_x86/src/oltiot.h

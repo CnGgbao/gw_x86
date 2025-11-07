@@ -32,7 +32,7 @@ int main()
     std::thread t(input_thread); // 开输入监听线程
 
     oltiot_init();
-    
+    g_retry_manager.start(); // ✅ 启动重传管理器线程
     std::cout << "\n✅ Running... (press Ctrl+C to exit)" << std::endl;
     
     // 主线程保持运行，用于维持 MQTT 长连接

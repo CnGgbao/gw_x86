@@ -11,6 +11,8 @@
 std::mutex reg_list_mutex;
 std::list<oltiot_comm_reg_node_t> reg_list;
 
+AsyncRetryManager g_retry_manager(10); // 30 秒重传间隔
+
 void oltiot_msg_handle_reg(const oltiot_msg_reg_t* reg, oltiot_msg_reg_cb cb, void* arg)
 {
     if (!reg || !cb || reg->topic.empty() || reg->method.empty()) return;
@@ -122,6 +124,12 @@ int oltiot_message_arrived(const std::string& topicName, const std::string& payl
         d->CopyFrom(doc["params"], d->GetAllocator());
         msg->params = d;
         hasParams = true;
+    }
+
+    if (isAck && !msg->seq.empty()) {
+        std::cout << "[oltiot_comm] ACK received for SEQ: " << msg->seq << std::endl;
+        
+        g_retry_manager.on_ack_received(msg->seq);
     }
 
     // result 提取（仅 ACK）
@@ -270,3 +278,164 @@ std::string generate_seq() {
     return ss.str().substr(0, 16);                    // 取前 16 位
 }
 
+int oltiot_send_message(const oltiot_msg_req_t& req)
+{
+    using namespace rapidjson;
+
+    // ===== 构建 JSON =====
+    Document doc;
+    doc.SetObject();
+    auto& alloc = doc.GetAllocator();
+
+    // 基本字段
+    doc.AddMember("method", Value(req.method.c_str(), alloc), alloc);
+    doc.AddMember("src", Value(req.src.c_str(), alloc), alloc);
+    doc.AddMember("dst", Value(req.dst.c_str(), alloc), alloc);
+    doc.AddMember("ver", Value(req.ver.c_str(), alloc), alloc);
+
+    // 可选 params
+    if (req.params) {
+        Value params_copy;
+        params_copy.CopyFrom(*req.params, alloc);
+        doc.AddMember("params", params_copy, alloc);
+    }
+
+    if(req.seq.empty())
+    {
+        return OLTIOT_COMM_PARM_ERROR;
+    }
+
+    // seq
+    std::string seq = req.seq.empty() ? generate_seq() : req.seq;
+    doc.AddMember("seq", Value().SetString(seq.c_str(), alloc), alloc);
+    // ===== 序列化 JSON =====
+    StringBuffer buffer;
+    Writer<StringBuffer> writer(buffer);
+    doc.Accept(writer);
+    std::string json_string = buffer.GetString();
+
+    std::cout << "[DEBUG] JSON: " << json_string << std::endl;
+
+    // ===== 构造 MQTT 消息 =====
+    auto pubmsg = mqtt::make_message(req.topic, json_string);
+    pubmsg->set_qos(0);      // QoS 可根据需求
+    pubmsg->set_retained(false);
+
+    // ===== 异步发送，线程安全 =====
+    int rc = -1;
+    {
+        std::lock_guard<std::mutex> lock(client_mutex);
+        if (g_mqtt_client) {
+            try {
+                g_mqtt_client->publish(pubmsg);
+                rc = 0; // 成功
+                std::cout << "[DEBUG] MQTT publish success" << std::endl;
+            } catch (const mqtt::exception& e) {
+                std::cerr << "[ERROR] MQTT publish failed: " << e.what() << std::endl;
+                rc = -1;
+            }
+        } else {
+            std::cerr << "[WARN] MQTT client not connected!" << std::endl;
+        }
+    }
+
+    return rc;
+}
+
+AsyncRetryManager::AsyncRetryManager(int retry_interval_sec)
+    : stop_flag_(false), retry_interval_(retry_interval_sec) {}
+
+AsyncRetryManager::~AsyncRetryManager() {
+    stop();
+}
+
+void AsyncRetryManager::start() {
+    if (worker_thread_.joinable()) {
+        return; // 已经启动
+    }
+    std::cout << "[RetryManager] Starting C++ style retry manager thread..." << std::endl;
+    worker_thread_ = std::thread(&AsyncRetryManager::run_worker, this);
+}
+
+void AsyncRetryManager::stop() {
+    stop_flag_.store(true);
+    cv_.notify_one(); // 唤醒工作线程以便退出
+    if (worker_thread_.joinable()) {
+        worker_thread_.join();
+    }
+    std::cout << "[RetryManager] Stopped." << std::endl;
+}
+
+/**
+ * @brief 后台重传线程
+ */
+void AsyncRetryManager::run_worker() {
+    // 循环间隔
+    const auto loop_interval = std::chrono::seconds(5);
+
+    while (!stop_flag_.load()) {
+        
+        std::vector<oltiot_msg_req_t> messages_to_resend;
+        auto now = std::chrono::steady_clock::now();
+
+        // 1. 检查哪些消息需要重传
+        {
+            std::unique_lock<std::mutex> lock(mutex_);
+            for (auto it = in_flight_messages_.begin(); it != in_flight_messages_.end(); ++it) {
+                auto time_since_sent = now - it->second.last_sent_time;
+                
+                if (time_since_sent > retry_interval_) {
+                    // 超时了，准备重传
+                    std::cout << "[RetryManager] Resending message for method: " 
+                              << it->second.req.method << ", SEQ: " << it->second.req.seq << std::endl;
+                    
+                    messages_to_resend.push_back(it->second.req);
+                    // 更新时间戳
+                    it->second.last_sent_time = now;
+                }
+            }
+        } // 互斥锁在这里释放
+
+        // 2. 执行重传（在锁外发送，避免死锁）
+        for (const auto& req : messages_to_resend) {
+            oltiot_send_message(req); // 调用底层的发送函数
+        }
+
+        // 3. 高效休眠，直到被 stop() 唤醒或超时
+        std::unique_lock<std::mutex> lock(mutex_);
+        cv_.wait_for(lock, loop_interval, [this]{ return stop_flag_.load(); });
+    }
+}
+
+
+void AsyncRetryManager::add_for_retry(const oltiot_msg_req_t& req) {
+    RetransmitInfo info;
+    info.req = req; // 存储副本
+    info.last_sent_time = std::chrono::steady_clock::now();
+
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        in_flight_messages_[req.seq] = info;
+    }
+    
+    std::cout << "[RetryManager] Added message for retry. Method: " 
+              << req.method << ", SEQ: " << req.seq << std::endl;
+}
+
+
+void AsyncRetryManager::on_ack_received(const std::string& seq) {
+    if (seq.empty()) return;
+
+    std::lock_guard<std::mutex> lock(mutex_);
+    
+    if (in_flight_messages_.erase(seq) > 0) {
+        std::cout << "[RetryManager] ACK matched. Removed SEQ: " << seq << " from retry map." << std::endl;
+    }
+}
+
+int oltiot_comm_send_guaranteed(oltiot_msg_req_t req) // 按值传递，获取副本
+{
+    g_retry_manager.add_for_retry(req);
+
+    return oltiot_send_message(req);
+}

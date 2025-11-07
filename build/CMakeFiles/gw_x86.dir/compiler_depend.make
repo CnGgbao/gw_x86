@@ -363,6 +363,7 @@ CMakeFiles/gw_x86.dir/oltiot.cpp.o: /home/cyg/mqtt_x86/mqtt.client/gw_x86/src/ol
   /usr/include/assert.h \
   /usr/include/c++/13/algorithm \
   /usr/include/c++/13/array \
+  /usr/include/c++/13/atomic \
   /usr/include/c++/13/backward/auto_ptr.h \
   /usr/include/c++/13/backward/binders.h \
   /usr/include/c++/13/bit \
@@ -688,6 +689,7 @@ CMakeFiles/gw_x86.dir/oltiot_comm.cpp.o: /home/cyg/mqtt_x86/mqtt.client/gw_x86/s
   /usr/include/assert.h \
   /usr/include/c++/13/algorithm \
   /usr/include/c++/13/array \
+  /usr/include/c++/13/atomic \
   /usr/include/c++/13/backward/auto_ptr.h \
   /usr/include/c++/13/backward/binders.h \
   /usr/include/c++/13/bit \
@@ -1056,6 +1058,7 @@ CMakeFiles/gw_x86.dir/oltiot_devobj.cpp.o: /home/cyg/mqtt_x86/mqtt.client/gw_x86
   /usr/include/assert.h \
   /usr/include/c++/13/algorithm \
   /usr/include/c++/13/array \
+  /usr/include/c++/13/atomic \
   /usr/include/c++/13/backward/auto_ptr.h \
   /usr/include/c++/13/backward/binders.h \
   /usr/include/c++/13/bit \

@@ -272,4 +272,5 @@ CMakeFiles/gw_x86.dir/oltiot.cpp.o: \
  /home/cyg/mqtt_x86/mqtt.client/rapidjson/include/rapidjson/internal/dtoa.h \
  /home/cyg/mqtt_x86/mqtt.client/rapidjson/include/rapidjson/internal/itoa.h \
  /home/cyg/mqtt_x86/mqtt.client/rapidjson/include/rapidjson/internal/itoa.h \
- /home/cyg/mqtt_x86/mqtt.client/rapidjson/include/rapidjson/stringbuffer.h
+ /home/cyg/mqtt_x86/mqtt.client/rapidjson/include/rapidjson/stringbuffer.h \
+ /usr/include/c++/13/atomic

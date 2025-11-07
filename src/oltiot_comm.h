@@ -10,7 +10,10 @@
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/writer.h>
 #include "mqtt/async_client.h"
-
+#include <unordered_map>
+#include <chrono>
+#include <thread>
+#include <atomic>
 
 
 #define OLTIOT_COMM_SUCCESS              1      //成功
@@ -87,6 +90,43 @@ struct oltiot_comm_req_process_t {
 extern std::mutex reg_list_mutex;
 extern std::list<oltiot_comm_reg_node_t> reg_list;
 
+
+struct RetransmitInfo {
+    oltiot_msg_req_t req; // 存储完整的请求消息
+    std::chrono::steady_clock::time_point last_sent_time; // 上次发送时间
+};
+
+/**
+ * @brief 异步重传管理器 (C++ 风格)
+ * 封装了所有重传逻辑，线程安全
+ */
+class AsyncRetryManager {
+public:
+    AsyncRetryManager(int retry_interval_sec = 30);
+    ~AsyncRetryManager();
+
+    void start();
+    void stop();
+    void add_for_retry(const oltiot_msg_req_t& req);
+    void on_ack_received(const std::string& seq);
+
+private:
+    void run_worker();
+
+    std::mutex mutex_;
+    std::condition_variable cv_;
+    std::atomic<bool> stop_flag_;
+    std::thread worker_thread_;
+    std::chrono::seconds retry_interval_;
+    
+    std::unordered_map<std::string, RetransmitInfo> in_flight_messages_;
+};
+
+extern AsyncRetryManager g_retry_manager;
+
+// ==== 保证送达发送接口 ====
+int oltiot_comm_send_guaranteed(oltiot_msg_req_t req); // 故意按值传递来复制
+
 // ==== 注册消息处理函数 ====
 void oltiot_msg_handle_reg(const oltiot_msg_reg_t* reg, oltiot_msg_reg_cb cb, void* arg);
 
@@ -101,3 +141,6 @@ int oltiot_msg_resp(const oltiot_msg_resp_t* to_resp) ;
 
 // ==== 生成唯一序列号 ====
 std::string generate_seq();
+
+// ==== 发送请求消息 ====
+int oltiot_send_message(const oltiot_msg_req_t& req);

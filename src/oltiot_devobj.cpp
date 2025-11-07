@@ -619,66 +619,6 @@ void oltiot_devobj_register() {
     std::cout << "[devobj] All handlers registered." << std::endl;
 }
 
-int oltiot_send_message(const oltiot_msg_req_t& req)
-{
-    using namespace rapidjson;
-
-    // ===== 构建 JSON =====
-    Document doc;
-    doc.SetObject();
-    auto& alloc = doc.GetAllocator();
-
-    // 基本字段
-    doc.AddMember("method", Value(req.method.c_str(), alloc), alloc);
-    doc.AddMember("src", Value(req.src.c_str(), alloc), alloc);
-    doc.AddMember("dst", Value(req.dst.c_str(), alloc), alloc);
-    doc.AddMember("ver", Value(req.ver.c_str(), alloc), alloc);
-
-    // 可选 params
-    if (req.params) {
-        Value params_copy;
-        params_copy.CopyFrom(*req.params, alloc);
-        doc.AddMember("params", params_copy, alloc);
-    }
-
-    // seq
-    std::string seq = req.seq.empty() ? generate_seq() : req.seq;
-    doc.AddMember("seq", Value().SetString(seq.c_str(), alloc), alloc);
-
-    // ===== 序列化 JSON =====
-    StringBuffer buffer;
-    Writer<StringBuffer> writer(buffer);
-    doc.Accept(writer);
-    std::string json_string = buffer.GetString();
-
-    std::cout << "[DEBUG] JSON: " << json_string << std::endl;
-
-    // ===== 构造 MQTT 消息 =====
-    auto pubmsg = mqtt::make_message(req.topic, json_string);
-    pubmsg->set_qos(0);      // QoS 可根据需求
-    pubmsg->set_retained(false);
-
-    // ===== 异步发送，线程安全 =====
-    int rc = -1;
-    {
-        std::lock_guard<std::mutex> lock(client_mutex);
-        if (g_mqtt_client) {
-            try {
-                g_mqtt_client->publish(pubmsg);
-                rc = 0; // 成功
-                std::cout << "[DEBUG] MQTT publish success" << std::endl;
-            } catch (const mqtt::exception& e) {
-                std::cerr << "[ERROR] MQTT publish failed: " << e.what() << std::endl;
-                rc = -1;
-            }
-        } else {
-            std::cerr << "[WARN] MQTT client not connected!" << std::endl;
-        }
-    }
-
-    return rc;
-}
-
 int oltiot_get_time(oltiot_msg_req_t& req)
 {
     if (req.method.empty())  req.method = "Dev.GetTime";
@@ -853,7 +793,7 @@ int oltiot_report_dev(const std::vector<dev_item_t>& devices)
     doc.AddMember("devices", devices_arr, alloc);
 
     // 调用底层 MQTT 发送
-    return oltiot_send_message(req);
+    return oltiot_comm_send_guaranteed(req);
 }
 
 
