@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/gw_x86.dir/main.cpp.o CMakeFiles/gw_x86.dir/oltiot.cpp.o CMakeFiles/gw_x86.dir/oltiot_comm.cpp.o CMakeFiles/gw_x86.dir/oltiot_devobj.cpp.o -o gw_x86  /usr/local/paho-mqtt-cpp-x86/lib/libpaho-mqttpp3.a /usr/local/paho-mqtt-cpp-x86/lib/libpaho-mqtt3a.a /usr/local/openssl-x86/lib64/libssl.a /usr/local/openssl-x86/lib64/libcrypto.a -lpthread 

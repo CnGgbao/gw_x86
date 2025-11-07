@@ -1,0 +1,3 @@
+/home/cyg/mqtt_x86/mqtt.client/gw_x86/build/CMakeFiles/gw_x86.dir
+/home/cyg/mqtt_x86/mqtt.client/gw_x86/build/CMakeFiles/edit_cache.dir
+/home/cyg/mqtt_x86/mqtt.client/gw_x86/build/CMakeFiles/rebuild_cache.dir
