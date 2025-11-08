@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.10)
 project(gw_x86)
 
+# ==== 子目录 ====
+add_subdirectory(oltiot)
+
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -27,11 +31,16 @@ include_directories(
     ${PAHO_MQTT_INCLUDE_DIR}
     ${RAPIDJSON_INCLUDE_DIR}         # ✅ 加入 RapidJSON
     ${CMAKE_CURRENT_SOURCE_DIR}      # 项目自身头文件
+    ${OLTIOT_INCLUDE_DIR}            # ✅ 引入子目录头文件
 )
 
 # ==== 源文件列表 ====
-file(GLOB_RECURSE SOURCES
-    "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
+file(GLOB SRC_MAIN "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
+
+# 来自 oltiot 子目录的源文件
+set(SOURCES
+    ${SRC_MAIN}
+    ${OLTIOT_SRC}
 )
 
 # ==== 可执行文件 ====

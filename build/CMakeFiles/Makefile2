@@ -64,15 +64,32 @@ CMAKE_BINARY_DIR = /home/cyg/mqtt_x86/mqtt.client/gw_x86/build
 
 # The main recursive "all" target.
 all: CMakeFiles/gw_x86.dir/all
+all: oltiot/all
 .PHONY : all
 
 # The main recursive "preinstall" target.
-preinstall:
+preinstall: oltiot/preinstall
 .PHONY : preinstall
 
 # The main recursive "clean" target.
 clean: CMakeFiles/gw_x86.dir/clean
+clean: oltiot/clean
 .PHONY : clean
+
+#=============================================================================
+# Directory level rules for directory oltiot
+
+# Recursive "all" directory target.
+oltiot/all:
+.PHONY : oltiot/all
+
+# Recursive "preinstall" directory target.
+oltiot/preinstall:
+.PHONY : oltiot/preinstall
+
+# Recursive "clean" directory target.
+oltiot/clean:
+.PHONY : oltiot/clean
 
 #=============================================================================
 # Target rules for target CMakeFiles/gw_x86.dir

@@ -1,7 +1,8 @@
-CMakeFiles/gw_x86.dir/main.cpp.o: \
- /home/cyg/mqtt_x86/mqtt.client/gw_x86/src/main.cpp \
+CMakeFiles/gw_x86.dir/oltiot/oltiot_devobj.cpp.o: \
+ /home/cyg/mqtt_x86/mqtt.client/gw_x86/src/oltiot/oltiot_devobj.cpp \
  /usr/include/stdc-predef.h \
- /home/cyg/mqtt_x86/mqtt.client/gw_x86/src/oltiot/oltiot.h \
+ /home/cyg/mqtt_x86/mqtt.client/gw_x86/src/oltiot/oltiot_devobj.h \
+ /home/cyg/mqtt_x86/mqtt.client/gw_x86/src/oltiot/oltiot_comm.h \
  /usr/include/c++/13/string /usr/include/c++/13/bits/requires_hosted.h \
  /usr/include/x86_64-linux-gnu/c++/13/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/13/bits/os_defines.h \
@@ -116,33 +117,60 @@ CMakeFiles/gw_x86.dir/main.cpp.o: \
  /usr/include/c++/13/bits/memory_resource.h /usr/include/c++/13/cstddef \
  /usr/include/c++/13/bits/uses_allocator.h \
  /usr/include/c++/13/bits/uses_allocator_args.h /usr/include/c++/13/tuple \
- /usr/include/c++/13/iostream /usr/include/c++/13/ostream \
- /usr/include/c++/13/ios /usr/include/c++/13/exception \
+ /usr/include/c++/13/mutex /usr/include/c++/13/exception \
  /usr/include/c++/13/bits/exception_ptr.h \
  /usr/include/c++/13/bits/cxxabi_init_exception.h \
  /usr/include/c++/13/typeinfo /usr/include/c++/13/bits/nested_exception.h \
- /usr/include/c++/13/bits/ios_base.h /usr/include/c++/13/ext/atomicity.h \
+ /usr/include/c++/13/bits/chrono.h /usr/include/c++/13/ratio \
+ /usr/include/c++/13/cstdint \
+ /usr/lib/gcc/x86_64-linux-gnu/13/include/stdint.h /usr/include/stdint.h \
+ /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
+ /usr/include/x86_64-linux-gnu/bits/stdint-least.h \
+ /usr/include/c++/13/limits /usr/include/c++/13/ctime /usr/include/time.h \
+ /usr/include/x86_64-linux-gnu/bits/time.h \
+ /usr/include/x86_64-linux-gnu/bits/timex.h \
+ /usr/include/x86_64-linux-gnu/bits/types/struct_tm.h \
+ /usr/include/x86_64-linux-gnu/bits/types/struct_itimerspec.h \
+ /usr/include/c++/13/bits/parse_numbers.h \
+ /usr/include/x86_64-linux-gnu/c++/13/bits/error_constants.h \
+ /usr/include/c++/13/bits/std_mutex.h \
  /usr/include/x86_64-linux-gnu/c++/13/bits/gthr.h \
  /usr/include/x86_64-linux-gnu/c++/13/bits/gthr-default.h \
  /usr/include/pthread.h /usr/include/sched.h \
  /usr/include/x86_64-linux-gnu/bits/sched.h \
  /usr/include/x86_64-linux-gnu/bits/types/struct_sched_param.h \
- /usr/include/x86_64-linux-gnu/bits/cpu-set.h /usr/include/time.h \
- /usr/include/x86_64-linux-gnu/bits/time.h \
- /usr/include/x86_64-linux-gnu/bits/timex.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_tm.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_itimerspec.h \
+ /usr/include/x86_64-linux-gnu/bits/cpu-set.h \
  /usr/include/x86_64-linux-gnu/bits/setjmp.h \
  /usr/include/x86_64-linux-gnu/bits/types/struct___jmp_buf_tag.h \
  /usr/include/x86_64-linux-gnu/bits/pthread_stack_min-dynamic.h \
+ /usr/include/c++/13/bits/unique_lock.h \
+ /usr/include/c++/13/ext/atomicity.h \
  /usr/include/x86_64-linux-gnu/c++/13/bits/atomic_word.h \
  /usr/include/x86_64-linux-gnu/sys/single_threaded.h \
+ /usr/include/c++/13/condition_variable \
+ /usr/include/c++/13/bits/shared_ptr.h \
+ /usr/include/c++/13/bits/shared_ptr_base.h \
+ /usr/include/c++/13/bits/allocated_ptr.h \
+ /usr/include/c++/13/bits/unique_ptr.h \
+ /usr/include/c++/13/ext/aligned_buffer.h \
+ /usr/include/c++/13/ext/concurrence.h /usr/include/c++/13/list \
+ /usr/include/c++/13/bits/stl_list.h /usr/include/c++/13/bits/list.tcc \
+ /usr/include/c++/13/memory /usr/include/c++/13/bits/stl_tempbuf.h \
+ /usr/include/c++/13/bits/stl_uninitialized.h \
+ /usr/include/c++/13/bits/stl_raw_storage_iter.h \
+ /usr/include/c++/13/bits/align.h \
+ /usr/include/c++/13/bits/shared_ptr_atomic.h \
+ /usr/include/c++/13/bits/atomic_base.h \
+ /usr/include/c++/13/bits/atomic_lockfree_defines.h \
+ /usr/include/c++/13/backward/auto_ptr.h \
+ /usr/include/c++/13/pstl/glue_memory_defs.h \
+ /usr/include/c++/13/pstl/execution_defs.h /usr/include/c++/13/iostream \
+ /usr/include/c++/13/ostream /usr/include/c++/13/ios \
+ /usr/include/c++/13/bits/ios_base.h \
  /usr/include/c++/13/bits/locale_classes.h \
  /usr/include/c++/13/bits/locale_classes.tcc \
- /usr/include/c++/13/system_error \
- /usr/include/x86_64-linux-gnu/c++/13/bits/error_constants.h \
- /usr/include/c++/13/stdexcept /usr/include/c++/13/streambuf \
- /usr/include/c++/13/bits/streambuf.tcc \
+ /usr/include/c++/13/system_error /usr/include/c++/13/stdexcept \
+ /usr/include/c++/13/streambuf /usr/include/c++/13/bits/streambuf.tcc \
  /usr/include/c++/13/bits/basic_ios.h \
  /usr/include/c++/13/bits/locale_facets.h /usr/include/c++/13/cwctype \
  /usr/include/wctype.h /usr/include/x86_64-linux-gnu/bits/wctype-wchar.h \
@@ -152,98 +180,12 @@ CMakeFiles/gw_x86.dir/main.cpp.o: \
  /usr/include/c++/13/bits/locale_facets.tcc \
  /usr/include/c++/13/bits/basic_ios.tcc \
  /usr/include/c++/13/bits/ostream.tcc /usr/include/c++/13/istream \
- /usr/include/c++/13/bits/istream.tcc /usr/include/c++/13/memory \
- /usr/include/c++/13/bits/stl_tempbuf.h \
- /usr/include/c++/13/bits/stl_uninitialized.h \
- /usr/include/c++/13/bits/stl_raw_storage_iter.h \
- /usr/include/c++/13/bits/align.h \
- /usr/lib/gcc/x86_64-linux-gnu/13/include/stdint.h /usr/include/stdint.h \
- /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
- /usr/include/x86_64-linux-gnu/bits/stdint-least.h \
- /usr/include/c++/13/bits/unique_ptr.h \
- /usr/include/c++/13/bits/shared_ptr.h \
- /usr/include/c++/13/bits/shared_ptr_base.h \
- /usr/include/c++/13/bits/allocated_ptr.h \
- /usr/include/c++/13/ext/aligned_buffer.h \
- /usr/include/c++/13/ext/concurrence.h \
- /usr/include/c++/13/bits/shared_ptr_atomic.h \
- /usr/include/c++/13/bits/atomic_base.h \
- /usr/include/c++/13/bits/atomic_lockfree_defines.h \
- /usr/include/c++/13/backward/auto_ptr.h \
- /usr/include/c++/13/pstl/glue_memory_defs.h \
- /usr/include/c++/13/pstl/execution_defs.h \
- /usr/local/paho-mqtt-cpp-x86/include/mqtt/async_client.h \
- /usr/local/paho-mqtt-cpp-x86/include/MQTTAsync.h \
- /usr/local/paho-mqtt-cpp-x86/include/MQTTExportDeclarations.h \
- /usr/local/paho-mqtt-cpp-x86/include/MQTTProperties.h \
- /usr/local/paho-mqtt-cpp-x86/include/MQTTReasonCodes.h \
- /usr/local/paho-mqtt-cpp-x86/include/MQTTSubscribeOpts.h \
- /usr/local/paho-mqtt-cpp-x86/include/MQTTClientPersistence.h \
- /usr/local/paho-mqtt-cpp-x86/include/mqtt/types.h \
- /usr/include/c++/13/vector /usr/include/c++/13/bits/stl_vector.h \
- /usr/include/c++/13/bits/stl_bvector.h \
- /usr/include/c++/13/bits/vector.tcc /usr/include/c++/13/chrono \
- /usr/include/c++/13/bits/chrono.h /usr/include/c++/13/ratio \
- /usr/include/c++/13/cstdint /usr/include/c++/13/limits \
- /usr/include/c++/13/ctime /usr/include/c++/13/bits/parse_numbers.h \
- /usr/local/paho-mqtt-cpp-x86/include/mqtt/token.h \
- /usr/local/paho-mqtt-cpp-x86/include/mqtt/iaction_listener.h \
- /usr/local/paho-mqtt-cpp-x86/include/mqtt/exception.h \
- /usr/local/paho-mqtt-cpp-x86/include/mqtt/properties.h \
- /usr/local/paho-mqtt-cpp-x86/include/MQTTProperties.h \
- /usr/local/paho-mqtt-cpp-x86/include/mqtt/buffer_ref.h \
- /usr/include/c++/13/cstring /usr/include/string.h /usr/include/strings.h \
- /usr/local/paho-mqtt-cpp-x86/include/mqtt/platform.h \
- /usr/local/paho-mqtt-cpp-x86/include/mqtt/export.h \
- /usr/local/paho-mqtt-cpp-x86/include/mqtt/string_collection.h \
- /usr/include/c++/13/map /usr/include/c++/13/bits/stl_tree.h \
- /usr/include/c++/13/bits/node_handle.h \
- /usr/include/c++/13/bits/stl_map.h \
- /usr/include/c++/13/bits/stl_multimap.h \
- /usr/include/c++/13/bits/erase_if.h \
- /usr/local/paho-mqtt-cpp-x86/include/mqtt/server_response.h \
- /usr/include/c++/13/thread /usr/include/c++/13/bits/std_thread.h \
- /usr/include/c++/13/bits/this_thread_sleep.h /usr/include/c++/13/mutex \
- /usr/include/c++/13/bits/std_mutex.h \
- /usr/include/c++/13/bits/unique_lock.h \
- /usr/include/c++/13/condition_variable \
- /usr/local/paho-mqtt-cpp-x86/include/mqtt/create_options.h \
- /usr/local/paho-mqtt-cpp-x86/include/mqtt/delivery_token.h \
- /usr/local/paho-mqtt-cpp-x86/include/mqtt/message.h \
- /usr/local/paho-mqtt-cpp-x86/include/mqtt/iclient_persistence.h \
- /usr/local/paho-mqtt-cpp-x86/include/mqtt/buffer_view.h \
- /usr/local/paho-mqtt-cpp-x86/include/mqtt/callback.h \
- /usr/local/paho-mqtt-cpp-x86/include/mqtt/thread_queue.h \
- /usr/include/c++/13/deque /usr/include/c++/13/bits/stl_deque.h \
- /usr/include/c++/13/bits/deque.tcc /usr/include/c++/13/queue \
- /usr/include/c++/13/bits/stl_heap.h /usr/include/c++/13/bits/stl_queue.h \
- /usr/include/c++/13/algorithm /usr/include/c++/13/bits/stl_algo.h \
- /usr/include/c++/13/bits/algorithmfwd.h \
- /usr/include/c++/13/bits/uniform_int_dist.h \
- /usr/include/c++/13/pstl/glue_algorithm_defs.h \
- /usr/local/paho-mqtt-cpp-x86/include/mqtt/iasync_client.h \
- /usr/local/paho-mqtt-cpp-x86/include/mqtt/connect_options.h \
- /usr/local/paho-mqtt-cpp-x86/include/mqtt/topic.h \
- /usr/local/paho-mqtt-cpp-x86/include/mqtt/subscribe_options.h \
- /usr/local/paho-mqtt-cpp-x86/include/MQTTSubscribeOpts.h \
- /usr/local/paho-mqtt-cpp-x86/include/mqtt/will_options.h \
- /usr/local/paho-mqtt-cpp-x86/include/mqtt/ssl_options.h \
- /usr/include/c++/13/functional /usr/include/c++/13/bits/std_function.h \
- /usr/include/c++/13/unordered_map \
- /usr/include/c++/13/bits/unordered_map.h \
- /usr/include/c++/13/bits/hashtable.h \
- /usr/include/c++/13/bits/hashtable_policy.h \
- /usr/include/c++/13/bits/enable_special_members.h \
- /usr/include/c++/13/array /usr/include/c++/13/compare \
- /usr/local/paho-mqtt-cpp-x86/include/mqtt/disconnect_options.h \
- /usr/include/c++/13/list /usr/include/c++/13/bits/stl_list.h \
- /usr/include/c++/13/bits/list.tcc \
- /home/cyg/mqtt_x86/mqtt.client/gw_x86/src/oltiot/oltiot_devobj.h \
- /home/cyg/mqtt_x86/mqtt.client/gw_x86/src/oltiot/oltiot_comm.h \
+ /usr/include/c++/13/bits/istream.tcc \
  /home/cyg/mqtt_x86/mqtt.client/rapidjson/include/rapidjson/document.h \
  /home/cyg/mqtt_x86/mqtt.client/rapidjson/include/rapidjson/reader.h \
  /home/cyg/mqtt_x86/mqtt.client/rapidjson/include/rapidjson/allocators.h \
  /home/cyg/mqtt_x86/mqtt.client/rapidjson/include/rapidjson/rapidjson.h \
+ /usr/include/c++/13/cstring /usr/include/string.h /usr/include/strings.h \
  /usr/include/inttypes.h /usr/include/c++/13/cassert \
  /usr/include/assert.h \
  /home/cyg/mqtt_x86/mqtt.client/rapidjson/include/rapidjson/stream.h \
@@ -273,4 +215,62 @@ CMakeFiles/gw_x86.dir/main.cpp.o: \
  /home/cyg/mqtt_x86/mqtt.client/rapidjson/include/rapidjson/internal/itoa.h \
  /home/cyg/mqtt_x86/mqtt.client/rapidjson/include/rapidjson/internal/itoa.h \
  /home/cyg/mqtt_x86/mqtt.client/rapidjson/include/rapidjson/stringbuffer.h \
- /usr/include/c++/13/atomic
+ /usr/local/paho-mqtt-cpp-x86/include/mqtt/async_client.h \
+ /usr/local/paho-mqtt-cpp-x86/include/MQTTAsync.h \
+ /usr/local/paho-mqtt-cpp-x86/include/MQTTExportDeclarations.h \
+ /usr/local/paho-mqtt-cpp-x86/include/MQTTProperties.h \
+ /usr/local/paho-mqtt-cpp-x86/include/MQTTReasonCodes.h \
+ /usr/local/paho-mqtt-cpp-x86/include/MQTTSubscribeOpts.h \
+ /usr/local/paho-mqtt-cpp-x86/include/MQTTClientPersistence.h \
+ /usr/local/paho-mqtt-cpp-x86/include/mqtt/types.h \
+ /usr/include/c++/13/vector /usr/include/c++/13/bits/stl_vector.h \
+ /usr/include/c++/13/bits/stl_bvector.h \
+ /usr/include/c++/13/bits/vector.tcc /usr/include/c++/13/chrono \
+ /usr/local/paho-mqtt-cpp-x86/include/mqtt/token.h \
+ /usr/local/paho-mqtt-cpp-x86/include/mqtt/iaction_listener.h \
+ /usr/local/paho-mqtt-cpp-x86/include/mqtt/exception.h \
+ /usr/local/paho-mqtt-cpp-x86/include/mqtt/properties.h \
+ /usr/local/paho-mqtt-cpp-x86/include/MQTTProperties.h \
+ /usr/local/paho-mqtt-cpp-x86/include/mqtt/buffer_ref.h \
+ /usr/local/paho-mqtt-cpp-x86/include/mqtt/platform.h \
+ /usr/local/paho-mqtt-cpp-x86/include/mqtt/export.h \
+ /usr/local/paho-mqtt-cpp-x86/include/mqtt/string_collection.h \
+ /usr/include/c++/13/map /usr/include/c++/13/bits/stl_tree.h \
+ /usr/include/c++/13/bits/node_handle.h \
+ /usr/include/c++/13/bits/stl_map.h \
+ /usr/include/c++/13/bits/stl_multimap.h \
+ /usr/include/c++/13/bits/erase_if.h \
+ /usr/local/paho-mqtt-cpp-x86/include/mqtt/server_response.h \
+ /usr/include/c++/13/thread /usr/include/c++/13/bits/std_thread.h \
+ /usr/include/c++/13/bits/this_thread_sleep.h \
+ /usr/local/paho-mqtt-cpp-x86/include/mqtt/create_options.h \
+ /usr/local/paho-mqtt-cpp-x86/include/mqtt/delivery_token.h \
+ /usr/local/paho-mqtt-cpp-x86/include/mqtt/message.h \
+ /usr/local/paho-mqtt-cpp-x86/include/mqtt/iclient_persistence.h \
+ /usr/local/paho-mqtt-cpp-x86/include/mqtt/buffer_view.h \
+ /usr/local/paho-mqtt-cpp-x86/include/mqtt/callback.h \
+ /usr/local/paho-mqtt-cpp-x86/include/mqtt/thread_queue.h \
+ /usr/include/c++/13/deque /usr/include/c++/13/bits/stl_deque.h \
+ /usr/include/c++/13/bits/deque.tcc /usr/include/c++/13/queue \
+ /usr/include/c++/13/bits/stl_heap.h /usr/include/c++/13/bits/stl_queue.h \
+ /usr/include/c++/13/algorithm /usr/include/c++/13/bits/stl_algo.h \
+ /usr/include/c++/13/bits/algorithmfwd.h \
+ /usr/include/c++/13/bits/uniform_int_dist.h \
+ /usr/include/c++/13/pstl/glue_algorithm_defs.h \
+ /usr/local/paho-mqtt-cpp-x86/include/mqtt/iasync_client.h \
+ /usr/local/paho-mqtt-cpp-x86/include/mqtt/connect_options.h \
+ /usr/local/paho-mqtt-cpp-x86/include/mqtt/topic.h \
+ /usr/local/paho-mqtt-cpp-x86/include/mqtt/subscribe_options.h \
+ /usr/local/paho-mqtt-cpp-x86/include/MQTTSubscribeOpts.h \
+ /usr/local/paho-mqtt-cpp-x86/include/mqtt/will_options.h \
+ /usr/local/paho-mqtt-cpp-x86/include/mqtt/ssl_options.h \
+ /usr/include/c++/13/functional /usr/include/c++/13/bits/std_function.h \
+ /usr/include/c++/13/unordered_map \
+ /usr/include/c++/13/bits/unordered_map.h \
+ /usr/include/c++/13/bits/hashtable.h \
+ /usr/include/c++/13/bits/hashtable_policy.h \
+ /usr/include/c++/13/bits/enable_special_members.h \
+ /usr/include/c++/13/array /usr/include/c++/13/compare \
+ /usr/local/paho-mqtt-cpp-x86/include/mqtt/disconnect_options.h \
+ /usr/include/c++/13/atomic \
+ /home/cyg/mqtt_x86/mqtt.client/gw_x86/src/oltiot/oltiot.h

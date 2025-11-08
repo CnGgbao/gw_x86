@@ -1,5 +1,5 @@
-CMakeFiles/gw_x86.dir/main.cpp.o: \
- /home/cyg/mqtt_x86/mqtt.client/gw_x86/src/main.cpp \
+CMakeFiles/gw_x86.dir/oltiot/oltiot.cpp.o: \
+ /home/cyg/mqtt_x86/mqtt.client/gw_x86/src/oltiot/oltiot.cpp \
  /usr/include/stdc-predef.h \
  /home/cyg/mqtt_x86/mqtt.client/gw_x86/src/oltiot/oltiot.h \
  /usr/include/c++/13/string /usr/include/c++/13/bits/requires_hosted.h \

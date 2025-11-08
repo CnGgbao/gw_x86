@@ -153,77 +153,77 @@ main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/gw_x86.dir/build.make CMakeFiles/gw_x86.dir/main.cpp.s
 .PHONY : main.cpp.s
 
-oltiot.o: oltiot.cpp.o
-.PHONY : oltiot.o
+oltiot/oltiot.o: oltiot/oltiot.cpp.o
+.PHONY : oltiot/oltiot.o
 
 # target to build an object file
-oltiot.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/gw_x86.dir/build.make CMakeFiles/gw_x86.dir/oltiot.cpp.o
-.PHONY : oltiot.cpp.o
+oltiot/oltiot.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/gw_x86.dir/build.make CMakeFiles/gw_x86.dir/oltiot/oltiot.cpp.o
+.PHONY : oltiot/oltiot.cpp.o
 
-oltiot.i: oltiot.cpp.i
-.PHONY : oltiot.i
+oltiot/oltiot.i: oltiot/oltiot.cpp.i
+.PHONY : oltiot/oltiot.i
 
 # target to preprocess a source file
-oltiot.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/gw_x86.dir/build.make CMakeFiles/gw_x86.dir/oltiot.cpp.i
-.PHONY : oltiot.cpp.i
+oltiot/oltiot.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/gw_x86.dir/build.make CMakeFiles/gw_x86.dir/oltiot/oltiot.cpp.i
+.PHONY : oltiot/oltiot.cpp.i
 
-oltiot.s: oltiot.cpp.s
-.PHONY : oltiot.s
+oltiot/oltiot.s: oltiot/oltiot.cpp.s
+.PHONY : oltiot/oltiot.s
 
 # target to generate assembly for a file
-oltiot.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/gw_x86.dir/build.make CMakeFiles/gw_x86.dir/oltiot.cpp.s
-.PHONY : oltiot.cpp.s
+oltiot/oltiot.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/gw_x86.dir/build.make CMakeFiles/gw_x86.dir/oltiot/oltiot.cpp.s
+.PHONY : oltiot/oltiot.cpp.s
 
-oltiot_comm.o: oltiot_comm.cpp.o
-.PHONY : oltiot_comm.o
+oltiot/oltiot_comm.o: oltiot/oltiot_comm.cpp.o
+.PHONY : oltiot/oltiot_comm.o
 
 # target to build an object file
-oltiot_comm.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/gw_x86.dir/build.make CMakeFiles/gw_x86.dir/oltiot_comm.cpp.o
-.PHONY : oltiot_comm.cpp.o
+oltiot/oltiot_comm.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/gw_x86.dir/build.make CMakeFiles/gw_x86.dir/oltiot/oltiot_comm.cpp.o
+.PHONY : oltiot/oltiot_comm.cpp.o
 
-oltiot_comm.i: oltiot_comm.cpp.i
-.PHONY : oltiot_comm.i
+oltiot/oltiot_comm.i: oltiot/oltiot_comm.cpp.i
+.PHONY : oltiot/oltiot_comm.i
 
 # target to preprocess a source file
-oltiot_comm.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/gw_x86.dir/build.make CMakeFiles/gw_x86.dir/oltiot_comm.cpp.i
-.PHONY : oltiot_comm.cpp.i
+oltiot/oltiot_comm.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/gw_x86.dir/build.make CMakeFiles/gw_x86.dir/oltiot/oltiot_comm.cpp.i
+.PHONY : oltiot/oltiot_comm.cpp.i
 
-oltiot_comm.s: oltiot_comm.cpp.s
-.PHONY : oltiot_comm.s
+oltiot/oltiot_comm.s: oltiot/oltiot_comm.cpp.s
+.PHONY : oltiot/oltiot_comm.s
 
 # target to generate assembly for a file
-oltiot_comm.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/gw_x86.dir/build.make CMakeFiles/gw_x86.dir/oltiot_comm.cpp.s
-.PHONY : oltiot_comm.cpp.s
+oltiot/oltiot_comm.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/gw_x86.dir/build.make CMakeFiles/gw_x86.dir/oltiot/oltiot_comm.cpp.s
+.PHONY : oltiot/oltiot_comm.cpp.s
 
-oltiot_devobj.o: oltiot_devobj.cpp.o
-.PHONY : oltiot_devobj.o
+oltiot/oltiot_devobj.o: oltiot/oltiot_devobj.cpp.o
+.PHONY : oltiot/oltiot_devobj.o
 
 # target to build an object file
-oltiot_devobj.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/gw_x86.dir/build.make CMakeFiles/gw_x86.dir/oltiot_devobj.cpp.o
-.PHONY : oltiot_devobj.cpp.o
+oltiot/oltiot_devobj.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/gw_x86.dir/build.make CMakeFiles/gw_x86.dir/oltiot/oltiot_devobj.cpp.o
+.PHONY : oltiot/oltiot_devobj.cpp.o
 
-oltiot_devobj.i: oltiot_devobj.cpp.i
-.PHONY : oltiot_devobj.i
+oltiot/oltiot_devobj.i: oltiot/oltiot_devobj.cpp.i
+.PHONY : oltiot/oltiot_devobj.i
 
 # target to preprocess a source file
-oltiot_devobj.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/gw_x86.dir/build.make CMakeFiles/gw_x86.dir/oltiot_devobj.cpp.i
-.PHONY : oltiot_devobj.cpp.i
+oltiot/oltiot_devobj.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/gw_x86.dir/build.make CMakeFiles/gw_x86.dir/oltiot/oltiot_devobj.cpp.i
+.PHONY : oltiot/oltiot_devobj.cpp.i
 
-oltiot_devobj.s: oltiot_devobj.cpp.s
-.PHONY : oltiot_devobj.s
+oltiot/oltiot_devobj.s: oltiot/oltiot_devobj.cpp.s
+.PHONY : oltiot/oltiot_devobj.s
 
 # target to generate assembly for a file
-oltiot_devobj.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/gw_x86.dir/build.make CMakeFiles/gw_x86.dir/oltiot_devobj.cpp.s
-.PHONY : oltiot_devobj.cpp.s
+oltiot/oltiot_devobj.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/gw_x86.dir/build.make CMakeFiles/gw_x86.dir/oltiot/oltiot_devobj.cpp.s
+.PHONY : oltiot/oltiot_devobj.cpp.s
 
 # Help Target
 help:
@@ -237,15 +237,15 @@ help:
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
-	@echo "... oltiot.o"
-	@echo "... oltiot.i"
-	@echo "... oltiot.s"
-	@echo "... oltiot_comm.o"
-	@echo "... oltiot_comm.i"
-	@echo "... oltiot_comm.s"
-	@echo "... oltiot_devobj.o"
-	@echo "... oltiot_devobj.i"
-	@echo "... oltiot_devobj.s"
+	@echo "... oltiot/oltiot.o"
+	@echo "... oltiot/oltiot.i"
+	@echo "... oltiot/oltiot.s"
+	@echo "... oltiot/oltiot_comm.o"
+	@echo "... oltiot/oltiot_comm.i"
+	@echo "... oltiot/oltiot_comm.s"
+	@echo "... oltiot/oltiot_devobj.o"
+	@echo "... oltiot/oltiot_devobj.i"
+	@echo "... oltiot/oltiot_devobj.s"
 .PHONY : help
 
 

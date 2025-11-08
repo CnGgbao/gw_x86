@@ -83,62 +83,62 @@ CMakeFiles/gw_x86.dir/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/gw_x86.dir/main.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cyg/mqtt_x86/mqtt.client/gw_x86/src/main.cpp -o CMakeFiles/gw_x86.dir/main.cpp.s
 
-CMakeFiles/gw_x86.dir/oltiot.cpp.o: CMakeFiles/gw_x86.dir/flags.make
-CMakeFiles/gw_x86.dir/oltiot.cpp.o: /home/cyg/mqtt_x86/mqtt.client/gw_x86/src/oltiot.cpp
-CMakeFiles/gw_x86.dir/oltiot.cpp.o: CMakeFiles/gw_x86.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/cyg/mqtt_x86/mqtt.client/gw_x86/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/gw_x86.dir/oltiot.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/gw_x86.dir/oltiot.cpp.o -MF CMakeFiles/gw_x86.dir/oltiot.cpp.o.d -o CMakeFiles/gw_x86.dir/oltiot.cpp.o -c /home/cyg/mqtt_x86/mqtt.client/gw_x86/src/oltiot.cpp
+CMakeFiles/gw_x86.dir/oltiot/oltiot.cpp.o: CMakeFiles/gw_x86.dir/flags.make
+CMakeFiles/gw_x86.dir/oltiot/oltiot.cpp.o: /home/cyg/mqtt_x86/mqtt.client/gw_x86/src/oltiot/oltiot.cpp
+CMakeFiles/gw_x86.dir/oltiot/oltiot.cpp.o: CMakeFiles/gw_x86.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/cyg/mqtt_x86/mqtt.client/gw_x86/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/gw_x86.dir/oltiot/oltiot.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/gw_x86.dir/oltiot/oltiot.cpp.o -MF CMakeFiles/gw_x86.dir/oltiot/oltiot.cpp.o.d -o CMakeFiles/gw_x86.dir/oltiot/oltiot.cpp.o -c /home/cyg/mqtt_x86/mqtt.client/gw_x86/src/oltiot/oltiot.cpp
 
-CMakeFiles/gw_x86.dir/oltiot.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/gw_x86.dir/oltiot.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cyg/mqtt_x86/mqtt.client/gw_x86/src/oltiot.cpp > CMakeFiles/gw_x86.dir/oltiot.cpp.i
+CMakeFiles/gw_x86.dir/oltiot/oltiot.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/gw_x86.dir/oltiot/oltiot.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cyg/mqtt_x86/mqtt.client/gw_x86/src/oltiot/oltiot.cpp > CMakeFiles/gw_x86.dir/oltiot/oltiot.cpp.i
 
-CMakeFiles/gw_x86.dir/oltiot.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/gw_x86.dir/oltiot.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cyg/mqtt_x86/mqtt.client/gw_x86/src/oltiot.cpp -o CMakeFiles/gw_x86.dir/oltiot.cpp.s
+CMakeFiles/gw_x86.dir/oltiot/oltiot.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/gw_x86.dir/oltiot/oltiot.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cyg/mqtt_x86/mqtt.client/gw_x86/src/oltiot/oltiot.cpp -o CMakeFiles/gw_x86.dir/oltiot/oltiot.cpp.s
 
-CMakeFiles/gw_x86.dir/oltiot_comm.cpp.o: CMakeFiles/gw_x86.dir/flags.make
-CMakeFiles/gw_x86.dir/oltiot_comm.cpp.o: /home/cyg/mqtt_x86/mqtt.client/gw_x86/src/oltiot_comm.cpp
-CMakeFiles/gw_x86.dir/oltiot_comm.cpp.o: CMakeFiles/gw_x86.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/cyg/mqtt_x86/mqtt.client/gw_x86/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/gw_x86.dir/oltiot_comm.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/gw_x86.dir/oltiot_comm.cpp.o -MF CMakeFiles/gw_x86.dir/oltiot_comm.cpp.o.d -o CMakeFiles/gw_x86.dir/oltiot_comm.cpp.o -c /home/cyg/mqtt_x86/mqtt.client/gw_x86/src/oltiot_comm.cpp
+CMakeFiles/gw_x86.dir/oltiot/oltiot_comm.cpp.o: CMakeFiles/gw_x86.dir/flags.make
+CMakeFiles/gw_x86.dir/oltiot/oltiot_comm.cpp.o: /home/cyg/mqtt_x86/mqtt.client/gw_x86/src/oltiot/oltiot_comm.cpp
+CMakeFiles/gw_x86.dir/oltiot/oltiot_comm.cpp.o: CMakeFiles/gw_x86.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/cyg/mqtt_x86/mqtt.client/gw_x86/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/gw_x86.dir/oltiot/oltiot_comm.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/gw_x86.dir/oltiot/oltiot_comm.cpp.o -MF CMakeFiles/gw_x86.dir/oltiot/oltiot_comm.cpp.o.d -o CMakeFiles/gw_x86.dir/oltiot/oltiot_comm.cpp.o -c /home/cyg/mqtt_x86/mqtt.client/gw_x86/src/oltiot/oltiot_comm.cpp
 
-CMakeFiles/gw_x86.dir/oltiot_comm.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/gw_x86.dir/oltiot_comm.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cyg/mqtt_x86/mqtt.client/gw_x86/src/oltiot_comm.cpp > CMakeFiles/gw_x86.dir/oltiot_comm.cpp.i
+CMakeFiles/gw_x86.dir/oltiot/oltiot_comm.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/gw_x86.dir/oltiot/oltiot_comm.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cyg/mqtt_x86/mqtt.client/gw_x86/src/oltiot/oltiot_comm.cpp > CMakeFiles/gw_x86.dir/oltiot/oltiot_comm.cpp.i
 
-CMakeFiles/gw_x86.dir/oltiot_comm.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/gw_x86.dir/oltiot_comm.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cyg/mqtt_x86/mqtt.client/gw_x86/src/oltiot_comm.cpp -o CMakeFiles/gw_x86.dir/oltiot_comm.cpp.s
+CMakeFiles/gw_x86.dir/oltiot/oltiot_comm.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/gw_x86.dir/oltiot/oltiot_comm.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cyg/mqtt_x86/mqtt.client/gw_x86/src/oltiot/oltiot_comm.cpp -o CMakeFiles/gw_x86.dir/oltiot/oltiot_comm.cpp.s
 
-CMakeFiles/gw_x86.dir/oltiot_devobj.cpp.o: CMakeFiles/gw_x86.dir/flags.make
-CMakeFiles/gw_x86.dir/oltiot_devobj.cpp.o: /home/cyg/mqtt_x86/mqtt.client/gw_x86/src/oltiot_devobj.cpp
-CMakeFiles/gw_x86.dir/oltiot_devobj.cpp.o: CMakeFiles/gw_x86.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/cyg/mqtt_x86/mqtt.client/gw_x86/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/gw_x86.dir/oltiot_devobj.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/gw_x86.dir/oltiot_devobj.cpp.o -MF CMakeFiles/gw_x86.dir/oltiot_devobj.cpp.o.d -o CMakeFiles/gw_x86.dir/oltiot_devobj.cpp.o -c /home/cyg/mqtt_x86/mqtt.client/gw_x86/src/oltiot_devobj.cpp
+CMakeFiles/gw_x86.dir/oltiot/oltiot_devobj.cpp.o: CMakeFiles/gw_x86.dir/flags.make
+CMakeFiles/gw_x86.dir/oltiot/oltiot_devobj.cpp.o: /home/cyg/mqtt_x86/mqtt.client/gw_x86/src/oltiot/oltiot_devobj.cpp
+CMakeFiles/gw_x86.dir/oltiot/oltiot_devobj.cpp.o: CMakeFiles/gw_x86.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/cyg/mqtt_x86/mqtt.client/gw_x86/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/gw_x86.dir/oltiot/oltiot_devobj.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/gw_x86.dir/oltiot/oltiot_devobj.cpp.o -MF CMakeFiles/gw_x86.dir/oltiot/oltiot_devobj.cpp.o.d -o CMakeFiles/gw_x86.dir/oltiot/oltiot_devobj.cpp.o -c /home/cyg/mqtt_x86/mqtt.client/gw_x86/src/oltiot/oltiot_devobj.cpp
 
-CMakeFiles/gw_x86.dir/oltiot_devobj.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/gw_x86.dir/oltiot_devobj.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cyg/mqtt_x86/mqtt.client/gw_x86/src/oltiot_devobj.cpp > CMakeFiles/gw_x86.dir/oltiot_devobj.cpp.i
+CMakeFiles/gw_x86.dir/oltiot/oltiot_devobj.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/gw_x86.dir/oltiot/oltiot_devobj.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cyg/mqtt_x86/mqtt.client/gw_x86/src/oltiot/oltiot_devobj.cpp > CMakeFiles/gw_x86.dir/oltiot/oltiot_devobj.cpp.i
 
-CMakeFiles/gw_x86.dir/oltiot_devobj.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/gw_x86.dir/oltiot_devobj.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cyg/mqtt_x86/mqtt.client/gw_x86/src/oltiot_devobj.cpp -o CMakeFiles/gw_x86.dir/oltiot_devobj.cpp.s
+CMakeFiles/gw_x86.dir/oltiot/oltiot_devobj.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/gw_x86.dir/oltiot/oltiot_devobj.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cyg/mqtt_x86/mqtt.client/gw_x86/src/oltiot/oltiot_devobj.cpp -o CMakeFiles/gw_x86.dir/oltiot/oltiot_devobj.cpp.s
 
 # Object files for target gw_x86
 gw_x86_OBJECTS = \
 "CMakeFiles/gw_x86.dir/main.cpp.o" \
-"CMakeFiles/gw_x86.dir/oltiot.cpp.o" \
-"CMakeFiles/gw_x86.dir/oltiot_comm.cpp.o" \
-"CMakeFiles/gw_x86.dir/oltiot_devobj.cpp.o"
+"CMakeFiles/gw_x86.dir/oltiot/oltiot.cpp.o" \
+"CMakeFiles/gw_x86.dir/oltiot/oltiot_comm.cpp.o" \
+"CMakeFiles/gw_x86.dir/oltiot/oltiot_devobj.cpp.o"
 
 # External object files for target gw_x86
 gw_x86_EXTERNAL_OBJECTS =
 
 gw_x86: CMakeFiles/gw_x86.dir/main.cpp.o
-gw_x86: CMakeFiles/gw_x86.dir/oltiot.cpp.o
-gw_x86: CMakeFiles/gw_x86.dir/oltiot_comm.cpp.o
-gw_x86: CMakeFiles/gw_x86.dir/oltiot_devobj.cpp.o
+gw_x86: CMakeFiles/gw_x86.dir/oltiot/oltiot.cpp.o
+gw_x86: CMakeFiles/gw_x86.dir/oltiot/oltiot_comm.cpp.o
+gw_x86: CMakeFiles/gw_x86.dir/oltiot/oltiot_devobj.cpp.o
 gw_x86: CMakeFiles/gw_x86.dir/build.make
 gw_x86: /usr/local/paho-mqtt-cpp-x86/lib/libpaho-mqttpp3.a
 gw_x86: /usr/local/paho-mqtt-cpp-x86/lib/libpaho-mqtt3a.a
