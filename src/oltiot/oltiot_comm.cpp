@@ -30,7 +30,7 @@ void oltiot_msg_handle_reg(const oltiot_msg_reg_t* reg, oltiot_msg_reg_cb cb, vo
     if (!reg->filter.empty()) {
         rapidjson::Document doc;
         if (doc.Parse(reg->filter.c_str()).HasParseError() || !doc.IsObject()) {
-            std::cerr << "[oltiot] ⚠️ Filter format error for method " << reg->method << std::endl;
+            std::cerr << "[oltiot_msg_handle_reg] ⚠️ Filter format error for method " << reg->method << std::endl;
             return;
         }
 
@@ -56,14 +56,14 @@ void oltiot_msg_handle_reg(const oltiot_msg_reg_t* reg, oltiot_msg_reg_cb cb, vo
                 nullptr,
                 callback::get_sub_listener()
             );
-            std::cout << "[oltiot] 🚀 Async subscribe sent: " << reg->topic << std::endl;
+            std::cout << "[oltiot_msg_handle_reg] 🚀 Async subscribe sent: " << reg->topic << std::endl;
         }
         catch (const mqtt::exception& exc) {
-            std::cerr << "[oltiot] ❌ Failed to send subscribe: " << reg->topic
+            std::cerr << "[oltiot_msg_handle_reg] ❌ Failed to send subscribe: " << reg->topic
                       << ", error: " << exc.what() << std::endl;
         }
     } else {
-        std::cout << "[oltiot] ℹ️ Client not connected yet, will subscribe on connect." << std::endl;
+        std::cout << "[oltiot_msg_handle_reg] ℹ️ Client not connected yet, will subscribe on connect." << std::endl;
     }
 
     // ===== 插入注册列表 =====
@@ -81,7 +81,7 @@ void oltiot_msg_handle_reg(const oltiot_msg_reg_t* reg, oltiot_msg_reg_cb cb, vo
         reg_list.insert(it, *new_node);
     }
 
-    std::cout << "[oltiot] ✅ Registered handle: " << reg->method
+    std::cout << "[oltiot_msg_handle_reg] ✅ Registered handle: " << reg->method
               << " for topic " << reg->topic
               << (new_node->filter_cnt ? " with filter" : "") << std::endl;
 }
@@ -92,7 +92,7 @@ int oltiot_message_arrived(const std::string& topicName, const std::string& payl
 
     Document doc;
     if (doc.Parse(payload.c_str()).HasParseError()) {
-        std::cout << "[oltiot] JSON parse error" << std::endl;
+        std::cout << "[oltiot_message_arrived] JSON parse error" << std::endl;
         return 1;
     }
 
@@ -128,7 +128,7 @@ int oltiot_message_arrived(const std::string& topicName, const std::string& payl
     }
 
     if (isAck && !msg->seq.empty()) {
-        std::cout << "[oltiot_comm] ACK received for SEQ: " << msg->seq << std::endl;
+        std::cout << "[oltiot_message_arrived] ACK received for SEQ: " << msg->seq << std::endl;
         
         g_retry_manager.on_ack_received(msg->seq);
     }
@@ -136,16 +136,16 @@ int oltiot_message_arrived(const std::string& topicName, const std::string& payl
     // result 提取（仅 ACK）
     if (isAck) {
         msg->result = getInt("result");
-        std::cout << "[oltiot] Ack message received for method: " << msg->method << std::endl;
+        std::cout << "[oltiot_message_arrived] Ack message received for method: " << msg->method << std::endl;
     }
 
     // 只过滤“纯 ACK”（即没有 params 的 ACK）
     if (isAck && !hasParams) {
-        std::cout << "[oltiot] Pure ACK (no params), skip callback" << std::endl;
+        std::cout << "[oltiot_message_arrived] Pure ACK (no params), skip callback" << std::endl;
         return 1;
     }
 
-    std::cout << "[oltiot] Distributing message for method: " << msg->method << std::endl;
+    std::cout << "[oltiot_message_arrived] Distributing message for method: " << msg->method << std::endl;
 
     std::lock_guard<std::mutex> lock(reg_list_mutex);
     for (auto& node : reg_list) {
@@ -157,7 +157,7 @@ int oltiot_message_arrived(const std::string& topicName, const std::string& payl
 
         if (node.filter_cnt == 0) {
             match = true;
-            std::cout << "[oltiot] Find listener (no filter) for method: " << msg->method << std::endl;
+            std::cout << "[oltiot_message_arrived] Find listener (no filter) for method: " << msg->method << std::endl;
         } else {
             match = true;
             for (size_t i = 0; i < node.filter_keys.size(); ++i) {
@@ -177,7 +177,7 @@ int oltiot_message_arrived(const std::string& topicName, const std::string& payl
             }
 
             if (match) {
-                std::cout << "[oltiot] Find listener for method: " << msg->method
+                std::cout << "[oltiot_message_arrived] Find listener for method: " << msg->method
                           << " (filter matched)" << std::endl;
             }
         }
@@ -243,7 +243,7 @@ int oltiot_msg_resp(const oltiot_msg_resp_t* to_resp)
     doc.Accept(writer);
     std::string json_string = buffer.GetString();
 
-    std::cout << "[DEBUG] TOPIC: " << to_resp->topic << "\nRSP: " << json_string << std::endl;
+    std::cout <<"[oltiot_msg_resp]" <<"[DEBUG] TOPIC: " << to_resp->topic << "\nRSP: " << json_string << std::endl;
 
     // 构造 MQTT 消息
     auto pubmsg = mqtt::make_message(to_resp->topic, json_string);
@@ -258,7 +258,7 @@ int oltiot_msg_resp(const oltiot_msg_resp_t* to_resp)
                 g_mqtt_client->publish(pubmsg);
                 rc = 0; // 成功
             } catch (const mqtt::exception& e) {
-                std::cerr << "[ERROR] MQTT publish failed: " << e.what() << std::endl;
+                std::cerr <<"[oltiot_msg_resp]" << "[ERROR] MQTT publish failed: " << e.what() << std::endl;
                 rc = -1;
             }
         }
@@ -315,7 +315,7 @@ int oltiot_send_message(const oltiot_msg_req_t& req)
     doc.Accept(writer);
     std::string json_string = buffer.GetString();
 
-    std::cout << "[DEBUG] JSON: " << json_string << std::endl;
+    std::cout << "[oltiot_send_message]" <<"[DEBUG] JSON: " << json_string << std::endl;
 
     // ===== 构造 MQTT 消息 =====
     auto pubmsg = mqtt::make_message(req.topic, json_string);
@@ -330,13 +330,13 @@ int oltiot_send_message(const oltiot_msg_req_t& req)
             try {
                 g_mqtt_client->publish(pubmsg);
                 rc = 0; // 成功
-                std::cout << "[DEBUG] MQTT publish success" << std::endl;
+                std::cout << "[oltiot_send_message]" << "[DEBUG] MQTT publish success" << std::endl;
             } catch (const mqtt::exception& e) {
-                std::cerr << "[ERROR] MQTT publish failed: " << e.what() << std::endl;
+                std::cerr << "[oltiot_send_message]" << "[ERROR] MQTT publish failed: " << e.what() << std::endl;
                 rc = -1;
             }
         } else {
-            std::cerr << "[WARN] MQTT client not connected!" << std::endl;
+            std::cerr << "[oltiot_send_message]" << "[WARN] MQTT client not connected!" << std::endl;
         }
     }
 
@@ -363,7 +363,7 @@ void AsyncRetryManager::start() {
     if (worker_thread_.joinable()) {
         return; // 已经启动
     }
-    std::cout << "[RetryManager] Starting C++ style retry manager thread..." << std::endl;
+    std::cout << "[RetryManager] start." << std::endl;
     worker_thread_ = std::thread(&AsyncRetryManager::run_worker, this);
 }
 

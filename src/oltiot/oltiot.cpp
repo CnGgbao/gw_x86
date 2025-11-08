@@ -37,16 +37,16 @@ void oltiot_devobj_init()
 
     // 连接服务器
     try {
-        std::cout << "Connecting to the MQTT server..." << std::flush;
+        std::cout <<"[oltiot_devobj_init]" << "Connecting to the MQTT server..." << std::flush;
         g_mqtt_client->connect(connOpts, nullptr, *g_cb);
     }
     catch (const mqtt::exception& exc) {
-        std::cerr << "\n❌ ERROR: Unable to connect to MQTT server: "
+        std::cerr <<"[oltiot_devobj_init]" << "\n❌ ERROR: Unable to connect to MQTT server: "
                   << SERVER_ADDRESS << "\n"
                   << exc.what() << std::endl;
     }
 
-    std::cout << "\n✅ Running... (press Ctrl+C to exit)" << std::endl;
+    std::cout <<"[oltiot_devobj_init]" << "\n✅ Running... (press Ctrl+C to exit)" << std::endl;
 }
 
 void oltiot_init()
@@ -92,16 +92,16 @@ callback::callback(std::shared_ptr<mqtt::async_client> cli, const mqtt::connect_
 void callback::reconnect() {
     std::this_thread::sleep_for(std::chrono::milliseconds(2500));
     try {
-        std::cout << "[oltiot] Trying to reconnect..." << std::endl;
+        std::cout << "[reconnect] Trying to reconnect..." << std::endl;
         client_ptr_->connect(connOpts_, nullptr, *this);
     }
     catch (const mqtt::exception& exc) {
-        std::cerr << "[oltiot] Reconnect Error: " << exc.what() << std::endl;
+        std::cerr << "[reconnect] Reconnect Error: " << exc.what() << std::endl;
     }
 }
 
 void callback::on_failure(const mqtt::token& tok) {
-    std::cout << "[oltiot] Connection attempt failed" << std::endl;
+    std::cout << "[on_failure] Connection attempt failed" << std::endl;
     if (++nretry_ > 5)
         return;
     reconnect();
@@ -109,12 +109,12 @@ void callback::on_failure(const mqtt::token& tok) {
 
 void callback::on_success(const mqtt::token& tok) {
     (void)tok;
-    std::cout << "[oltiot] Connection success" << std::endl;
+    std::cout << "[on_failure] Connection success" << std::endl;
 }
 
 void callback::connected(const std::string& cause) {
     
-    std::cout << "\n[oltiot] Connected successfully" << std::endl;
+    std::cout << "\n[connected] Connected successfully" << std::endl;
     
     if (!cause.empty())
         std::cout << "\tCause: " << cause << std::endl;
@@ -127,7 +127,7 @@ void callback::connected(const std::string& cause) {
             const std::string& topic = node.reg.topic;
             int qos = OLTIOT_COMM_QOS;
 
-            std::cout << "[oltiot] Subscribing topic: '" << topic 
+            std::cout << "[connected] Subscribing topic: '" << topic 
                       << "' for method: '" << node.reg.method 
                       << "' with QoS " << qos << std::endl;
 
@@ -136,7 +136,7 @@ void callback::connected(const std::string& cause) {
         }
     }
     catch (const mqtt::exception& exc) {
-        std::cerr << "[oltiot] Re-subscribe failed: " << exc.what() << std::endl;
+        std::cerr << "[connected] Re-subscribe failed: " << exc.what() << std::endl;
     }
 
     /*eid test*/
@@ -171,17 +171,17 @@ void callback::connected(const std::string& cause) {
 
 
 void callback::connection_lost(const std::string& cause) {
-    std::cout << "\n[oltiot] Lost connection" << std::endl;
+    std::cout << "\n[connection_lost] Lost connection" << std::endl;
     if (!cause.empty())
         std::cout << "\tCause: " << cause << std::endl;
 
-    std::cout << "[oltiot] Reconnecting..." << std::endl;
+    std::cout << "[connection_lost] Reconnecting..." << std::endl;
     nretry_ = 0;
     reconnect();
 }
 
 void callback::message_arrived(mqtt::const_message_ptr msg) {
-    std::cout << "[oltiot] Message arrived" << std::endl;
+    std::cout << "[message_arrived] Message arrived" << std::endl;
     std::cout << "\tTopic: " << msg->get_topic() << std::endl;
     std::cout << "\tPayload: " << msg->to_string() << std::endl;
 

@@ -150,7 +150,6 @@ namespace {
         std::cout << "  C++ CMD LIST:" << std::endl;
         std::cout << "            help (h)" << std::endl;
         std::cout << "            info" << std::endl;
-        std::cout << "            add_s <bid> <timeout>" << std::endl;
         std::cout << "            exit (q, quit)" << std::endl;
         return 0;
     }

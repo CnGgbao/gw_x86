@@ -43,7 +43,7 @@ void oltiot_ack_resp(const oltiot_msg_req_t* req, int result) {
 
 // 示例回调函数
 void example_cb(const oltiot_msg_req_t* req, void* arg) {
-    std::cout << "[devobj] Callback called for method: " << req->method
+    std::cout << "[example_cb] Callback called for method: " << req->method
               << ", topic: " << req->topic << std::endl;
 
     if (!req || !req->params) return;
@@ -54,19 +54,19 @@ void example_cb(const oltiot_msg_req_t* req, void* arg) {
     rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
     req->params->Accept(writer);  // 序列化整个 JSON 对象
 
-    std::cout << "[oltiot] Received params: " << buffer.GetString() << std::endl;
+    std::cout << "[example_cb] Received params: " << buffer.GetString() << std::endl;
 }
 
 void readpids_handle(const oltiot_msg_req_t* req, void* arg) {
     using namespace rapidjson;
-    std::cout << "[devobj] Callback called for method: " << req->method
+    std::cout << "[readpids_handle] Callback called for method: " << req->method
               << ", topic: " << req->topic << std::endl;
 
     int result = OLTIOT_COMM_SUCCESS;
 
     // 参数校验
     if (!req || !req->params) {
-        std::cerr << "[ReadPids] Invalid request: params is null" << std::endl;
+        std::cerr << "[readpids_handle] Invalid request: params is null" << std::endl;
         result = OLTIOT_COMM_PARM_ERROR;
         oltiot_ack_resp(req, result);
         return;
@@ -92,7 +92,7 @@ void readpids_handle(const oltiot_msg_req_t* req, void* arg) {
     }
 
     const auto& pids = doc["pids"].GetArray();
-    std::cout << "[ReadPids] DID=" << did << " read count=" << pids.Size() << std::endl;
+    std::cout << "[readpids_handle] DID=" << did << " read count=" << pids.Size() << std::endl;
 
 
     // ====================== 构造响应 JSON ======================
@@ -146,14 +146,14 @@ void readpids_handle(const oltiot_msg_req_t* req, void* arg) {
 
 void writepids_handle(const oltiot_msg_req_t* req, void* arg) {
     using namespace rapidjson;
-    std::cout << "[devobj] Callback called for method: " << req->method
+    std::cout << "[writepids_handle] Callback called for method: " << req->method
               << ", topic: " << req->topic << std::endl;
 
     int result = OLTIOT_COMM_SUCCESS;
 
     // 参数校验
     if (!req || !req->params) {
-        std::cerr << "[writePids] Invalid request: params is null" << std::endl;
+        std::cerr << "[writepids_handle] Invalid request: params is null" << std::endl;
         result = OLTIOT_COMM_PARM_ERROR;
         oltiot_ack_resp(req, result);
         return;
@@ -163,7 +163,7 @@ void writepids_handle(const oltiot_msg_req_t* req, void* arg) {
 
     // 解析 did
     if (!doc.HasMember("did") || !doc["did"].IsString()) {
-        std::cerr << "[writePids] Missing or invalid 'did'" << std::endl;
+        std::cerr << "[writepids_handle] Missing or invalid 'did'" << std::endl;
         result = OLTIOT_COMM_PARM_ERROR;
         oltiot_ack_resp(req, result);
         return;
@@ -172,7 +172,7 @@ void writepids_handle(const oltiot_msg_req_t* req, void* arg) {
 
     //解析 sid
     if (!doc.HasMember("sid") || !doc["sid"].IsInt()) {
-        std::cerr << "[writePids] Missing or invalid 'sid'" << std::endl;
+        std::cerr << "[writepids_handle] Missing or invalid 'sid'" << std::endl;
         result = OLTIOT_COMM_PARM_ERROR;
         oltiot_ack_resp(req, result);
         return;
@@ -181,19 +181,19 @@ void writepids_handle(const oltiot_msg_req_t* req, void* arg) {
 
     // 解析 pids[]
     if (!doc.HasMember("pids") || !doc["pids"].IsArray()) {
-        std::cerr << "[writePids] Missing or invalid 'pids' array" << std::endl;
+        std::cerr << "[writepids_handle] Missing or invalid 'pids' array" << std::endl;
         result = OLTIOT_COMM_PARM_ERROR;
         oltiot_ack_resp(req, result);
         return;
     }
 
     const auto& pids = doc["pids"].GetArray();
-    std::cout << "[writePids] DID=" << did <<" SID=" << sid<< " read count=" << pids.Size() << std::endl;
+    std::cout << "[writepids_handle] DID=" << did <<" SID=" << sid<< " read count=" << pids.Size() << std::endl;
 
     for (const auto& item : pids) {
         if (!item.HasMember("pid") || !item["pid"].IsInt() ||
             !item.HasMember("val") || !item["val"].IsInt()) {
-            std::cerr << "[writePids] Skip invalid entry" << std::endl;
+            std::cerr << "[writepids_handle] Skip invalid entry" << std::endl;
             continue;
         }
 
@@ -210,14 +210,14 @@ void writepids_handle(const oltiot_msg_req_t* req, void* arg) {
 
 void dofids_handle(const oltiot_msg_req_t* req, void* arg) {
     using namespace rapidjson;
-    std::cout << "[devobj] Callback called for method: " << req->method
+    std::cout << "[dofids_handle] Callback called for method: " << req->method
               << ", topic: " << req->topic << std::endl;
 
     int result = OLTIOT_COMM_SUCCESS;
 
     // 参数校验
     if (!req || !req->params) {
-        std::cerr << "[dofids] Invalid request: params is null" << std::endl;
+        std::cerr << "[dofids_handle] Invalid request: params is null" << std::endl;
         result = OLTIOT_COMM_PARM_ERROR;
         oltiot_ack_resp(req, result);
         return;
@@ -227,7 +227,7 @@ void dofids_handle(const oltiot_msg_req_t* req, void* arg) {
 
     // 解析 did
     if (!doc.HasMember("did") || !doc["did"].IsString()) {
-        std::cerr << "[dofids] Missing or invalid 'did'" << std::endl;
+        std::cerr << "[dofids_handle] Missing or invalid 'did'" << std::endl;
         result = OLTIOT_COMM_PARM_ERROR;
         oltiot_ack_resp(req, result);
         return;
@@ -236,7 +236,7 @@ void dofids_handle(const oltiot_msg_req_t* req, void* arg) {
 
     //解析 sid
     if (!doc.HasMember("sid") || !doc["sid"].IsInt()) {
-        std::cerr << "[dofids] Missing or invalid 'sid'" << std::endl;
+        std::cerr << "[dofids_handle] Missing or invalid 'sid'" << std::endl;
         result = OLTIOT_COMM_PARM_ERROR;
         oltiot_ack_resp(req, result);
         return;
@@ -245,7 +245,7 @@ void dofids_handle(const oltiot_msg_req_t* req, void* arg) {
 
     //解析 fid
     if( !doc.HasMember("fid") || !doc["fid"].IsInt()) {
-        std::cerr << "[dofids] Missing or invalid 'fid'" << std::endl;
+        std::cerr << "[dofids_handle] Missing or invalid 'fid'" << std::endl;
         result = OLTIOT_COMM_PARM_ERROR;
         oltiot_ack_resp(req, result);
         return;
@@ -254,7 +254,7 @@ void dofids_handle(const oltiot_msg_req_t* req, void* arg) {
 
     //解析 val
     if (!doc.HasMember("val") || !doc["val"].IsInt()) {
-        std::cerr << "[dofids] Missing or invalid 'val'" << std::endl;
+        std::cerr << "[dofids_handle] Missing or invalid 'val'" << std::endl;
         result = OLTIOT_COMM_PARM_ERROR;
         oltiot_ack_resp(req, result);
         return;
@@ -270,14 +270,14 @@ void dofids_handle(const oltiot_msg_req_t* req, void* arg) {
 
 void dev_disc_handle(const oltiot_msg_req_t* req, void* arg) {
     using namespace rapidjson;
-    std::cout << "[devobj] Callback called for method: " << req->method
+    std::cout << "[dev_disc_handle] Callback called for method: " << req->method
               << ", topic: " << req->topic << std::endl;
 
     int result = OLTIOT_COMM_SUCCESS;
 
     // 参数校验
     if (!req || !req->params) {
-        std::cerr << "[disc] Invalid request: params is null" << std::endl;
+        std::cerr << "[dev_disc_handle] Invalid request: params is null" << std::endl;
         result = OLTIOT_COMM_PARM_ERROR;
         oltiot_ack_resp(req, result);
         return;
@@ -285,13 +285,13 @@ void dev_disc_handle(const oltiot_msg_req_t* req, void* arg) {
 
     if (!req->seq.empty()) {
     set_latest_join_seq(req->seq);
-    std::cout << "[dev_addsub_handle] Set latest join seq: " << req->seq << std::endl;
+    std::cout << "[dev_disc_handle] Set latest join seq: " << req->seq << std::endl;
     }
 
     auto& doc = *req->params;
     // 解析 type
     if (!doc.HasMember("type") || !doc["type"].IsInt()) {
-        std::cerr << "[disc] Missing or invalid 'type'" << std::endl;
+        std::cerr << "[dev_disc_handle] Missing or invalid 'type'" << std::endl;
         result = OLTIOT_COMM_PARM_ERROR;
         oltiot_ack_resp(req, result);
         return;
@@ -301,7 +301,7 @@ void dev_disc_handle(const oltiot_msg_req_t* req, void* arg) {
 
     //解析 duration
     if (!doc.HasMember("duration") || !doc["duration"].IsInt()) {
-        std::cerr << "[disc] Missing or invalid 'duration'" << std::endl;
+        std::cerr << "[dev_disc_handle] Missing or invalid 'duration'" << std::endl;
         result = OLTIOT_COMM_PARM_ERROR;
         oltiot_ack_resp(req, result);
         return;
@@ -315,14 +315,14 @@ void dev_disc_handle(const oltiot_msg_req_t* req, void* arg) {
 
 void dev_stop_disc_handle(const oltiot_msg_req_t* req, void* arg) {
     using namespace rapidjson;
-    std::cout << "[devobj] Callback called for method: " << req->method
+    std::cout << "[dev_stop_disc_handle] Callback called for method: " << req->method
               << ", topic: " << req->topic << std::endl;
 
     int result = OLTIOT_COMM_SUCCESS;
 
     // 参数校验
     if (!req) {
-        std::cerr << "[stop_disc] Invalid request: params is null" << std::endl;
+        std::cerr << "[dev_stop_disc_handle] Invalid request: params is null" << std::endl;
         result = OLTIOT_COMM_PARM_ERROR;
         oltiot_ack_resp(req, result);
         return;
@@ -335,14 +335,14 @@ void dev_stop_disc_handle(const oltiot_msg_req_t* req, void* arg) {
 
 void dev_addsub_handle(const oltiot_msg_req_t* req, void* arg) {
     using namespace rapidjson;
-    std::cout << "[devobj] Callback called for method: " << req->method
+    std::cout << "[dev_addsub_handle] Callback called for method: " << req->method
               << ", topic: " << req->topic << std::endl;
 
     int result = OLTIOT_COMM_SUCCESS;
 
     // 参数校验
     if (!req || !req->params) {
-        std::cerr << "[addsub] Invalid request: params is null" << std::endl;
+        std::cerr << "[dev_addsub_handle] Invalid request: params is null" << std::endl;
         result = OLTIOT_COMM_PARM_ERROR;
         oltiot_ack_resp(req, result);
         return;
@@ -356,7 +356,7 @@ void dev_addsub_handle(const oltiot_msg_req_t* req, void* arg) {
     auto& doc = *req->params;
 
     if (!doc.HasMember("devices") || !doc["devices"].IsArray()) {
-        std::cerr << "[AddSub] Missing or invalid 'devices' array" << std::endl;
+        std::cerr << "[dev_addsub_handle] Missing or invalid 'devices' array" << std::endl;
         result = OLTIOT_COMM_PARM_ERROR;
         oltiot_ack_resp(req, result);
         return;
@@ -364,7 +364,7 @@ void dev_addsub_handle(const oltiot_msg_req_t* req, void* arg) {
 
     //解析 duration
     if (!doc.HasMember("duration") || !doc["duration"].IsInt()) {
-        std::cerr << "[addsub] Missing or invalid 'duration'" << std::endl;
+        std::cerr << "[dev_addsub_handle] Missing or invalid 'duration'" << std::endl;
         result = OLTIOT_COMM_PARM_ERROR;
         oltiot_ack_resp(req, result);
         return;
@@ -376,12 +376,12 @@ void dev_addsub_handle(const oltiot_msg_req_t* req, void* arg) {
     for (const auto& item : devices) 
     {
         if (!item.IsString()) {
-            std::cerr << "[AddSub] Invalid device entry (not string)" << std::endl;
+            std::cerr << "[dev_addsub_handle] Invalid device entry (not string)" << std::endl;
             continue;
         }
 
         std::string did = item.GetString();
-        std::cout << "[AddSub] device = " << did << std::endl;
+        std::cout << "[dev_addsub_handle] device = " << did << std::endl;
         result = oltiot_dev_add_sub(did, duration);
     }
 
@@ -391,14 +391,14 @@ void dev_addsub_handle(const oltiot_msg_req_t* req, void* arg) {
 
 void dev_delsub_handle(const oltiot_msg_req_t* req, void* arg) {
     using namespace rapidjson;
-    std::cout << "[devobj] Callback called for method: " << req->method
+    std::cout << "[dev_delsub_handle] Callback called for method: " << req->method
               << ", topic: " << req->topic << std::endl;
 
     int result = OLTIOT_COMM_SUCCESS;
 
     // 参数校验
     if (!req || !req->params) {
-        std::cerr << "[delsub] Invalid request: params is null" << std::endl;
+        std::cerr << "[dev_delsub_handle] Invalid request: params is null" << std::endl;
         result = OLTIOT_COMM_PARM_ERROR;
         oltiot_ack_resp(req, result);
         return;
@@ -407,7 +407,7 @@ void dev_delsub_handle(const oltiot_msg_req_t* req, void* arg) {
     auto& doc = *req->params;
 
     if (!doc.HasMember("devices") || !doc["devices"].IsArray()) {
-        std::cerr << "[delsub] Missing or invalid 'devices' array" << std::endl;
+        std::cerr << "[dev_delsub_handle] Missing or invalid 'devices' array" << std::endl;
         result = OLTIOT_COMM_PARM_ERROR;
         oltiot_ack_resp(req, result);
         return;
@@ -417,12 +417,12 @@ void dev_delsub_handle(const oltiot_msg_req_t* req, void* arg) {
     for (const auto& item : devices) 
     {
         if (!item.IsString()) {
-            std::cerr << "[delsub] Invalid device entry (not string)" << std::endl;
+            std::cerr << "[dev_delsub_handle] Invalid device entry (not string)" << std::endl;
             continue;
         }
 
         std::string did = item.GetString();
-        std::cout << "[delsub] device = " << did << std::endl;
+        std::cout << "[dev_delsub_handle] device = " << did << std::endl;
         result = oltiot_dev_del_sub(did);
     }
 
@@ -432,14 +432,14 @@ void dev_delsub_handle(const oltiot_msg_req_t* req, void* arg) {
 
 void dev_del_allsub_handle(const oltiot_msg_req_t* req, void* arg) {
     using namespace rapidjson;
-    std::cout << "[devobj] Callback called for method: " << req->method
+    std::cout << "[dev_del_allsub_handle] Callback called for method: " << req->method
               << ", topic: " << req->topic << std::endl;
 
     int result = OLTIOT_COMM_SUCCESS;
 
     // 参数校验
     if (!req) {
-        std::cerr << "[del_allsub] Invalid request: req is null" << std::endl;
+        std::cerr << "[dev_del_allsub_handle] Invalid request: req is null" << std::endl;
         result = OLTIOT_COMM_PARM_ERROR;
         oltiot_ack_resp(req, result);
         return;
@@ -452,14 +452,14 @@ void dev_del_allsub_handle(const oltiot_msg_req_t* req, void* arg) {
 
 void get_time_stamp_handle(const oltiot_msg_req_t* req, void* arg) {
     using namespace rapidjson;
-    std::cout << "[devobj] Callback called for method: " << req->method
+    std::cout << "[get_time_stamp_handle] Callback called for method: " << req->method
               << ", topic: " << req->topic << std::endl;
 
     int result = OLTIOT_COMM_SUCCESS;
 
     // 参数校验
     if (!req|| !req->params) {
-        std::cerr << "[get_time_stamp] Invalid request: params is null" << std::endl;
+        std::cerr << "[get_time_stamp_handle] Invalid request: params is null" << std::endl;
         return;
     }
 
@@ -467,7 +467,7 @@ void get_time_stamp_handle(const oltiot_msg_req_t* req, void* arg) {
 
     //解析 timestamp
     if (!doc.HasMember("timestamp") || !doc["timestamp"].IsInt64()) {
-        std::cerr << "[get_time_stamp] Missing or invalid 'timestamp'" << std::endl;
+        std::cerr << "[get_time_stamp_handle] Missing or invalid 'timestamp'" << std::endl;
         return;
     }
     long long timestamp = doc["timestamp"].GetInt64();
@@ -481,14 +481,14 @@ void get_time_stamp_handle(const oltiot_msg_req_t* req, void* arg) {
 
 void read_sublist_handle(const oltiot_msg_req_t* req, void* arg) {
     using namespace rapidjson;
-    std::cout << "[devobj] Callback called for method: " << req->method
+    std::cout << "[read_sublist_handle] Callback called for method: " << req->method
               << ", topic: " << req->topic << std::endl;
 
     int result = OLTIOT_COMM_SUCCESS;
 
     // 参数校验
     if (!req) {
-        std::cerr << "[get_time_stamp] Invalid request: req is null" << std::endl;
+        std::cerr << "[read_sublist_handle] Invalid request: req is null" << std::endl;
         result = OLTIOT_COMM_PARM_ERROR;
         oltiot_ack_resp(req, result);
         return;
@@ -540,7 +540,7 @@ void read_sublist_handle(const oltiot_msg_req_t* req, void* arg) {
 
 // ===== 注册示例函数 =====
 void oltiot_devobj_register() {
-    std::cout << "[devobj] Registering OLTIOT device object handlers..." << std::endl;
+    std::cout << "[oltiot_devobj_register] Registering OLTIOT device object handlers..." << std::endl;
 
     oltiot_msg_reg_t handle_reg;
 
@@ -616,7 +616,7 @@ void oltiot_devobj_register() {
     handle_reg.method = "Dev.GetTime";
     oltiot_msg_handle_reg(&handle_reg, get_time_stamp_handle, nullptr);
 
-    std::cout << "[devobj] All handlers registered." << std::endl;
+    std::cout << "[oltiot_devobj_register] All handlers registered." << std::endl;
 }
 
 int oltiot_get_time(oltiot_msg_req_t& req)
@@ -638,7 +638,7 @@ int oltiot_gateway_reg(const gateway_base_info_t& properties)
 
     if (properties.did.empty()) 
     {
-        std::cerr << "[Dev.Reg] properties is empty, skip sending" << std::endl;
+        std::cerr << "[oltiot_gateway_reg] properties is empty, skip sending" << std::endl;
         return OLTIOT_COMM_FAILURE; 
     }
 
@@ -673,7 +673,7 @@ int oltiot_report_pids(const property_item_t& prop)
 
     // ✅ 如果没有 pids，直接返回错误
     if (prop.pids.empty()) {
-        std::cerr << "[Dev.ReportPids] pids is empty, skip sending" << std::endl;
+        std::cerr << "[oltiot_report_pids] pids is empty, skip sending" << std::endl;
         return OLTIOT_COMM_FAILURE;
     }
 
@@ -722,7 +722,7 @@ int oltiot_report_eids(const eid_item_t& eids)
 
     if (eids.did.empty()) 
     {
-        std::cerr << "[Dev.ReportEid] eids is empty, skip sending" << std::endl;
+        std::cerr << "[oltiot_report_eids] eids is empty, skip sending" << std::endl;
         return OLTIOT_COMM_FAILURE; 
     }
 
@@ -756,7 +756,7 @@ int oltiot_report_dev(const std::vector<dev_item_t>& devices)
 
     if (devices.empty()) 
     {
-        std::cerr << "[Dev.Reg] devices is empty, skip sending" << std::endl;
+        std::cerr << "[oltiot_report_dev] devices is empty, skip sending" << std::endl;
         return OLTIOT_COMM_FAILURE; 
     }
 
@@ -803,7 +803,7 @@ int oltiot_report_online(const std::vector<online_item_t>& devices)
 
     if (devices.empty()) 
     {
-        std::cerr << "[Dev.Reg] devices is empty, skip sending" << std::endl;
+        std::cerr << "[oltiot_report_online] devices is empty, skip sending" << std::endl;
         return OLTIOT_COMM_FAILURE; 
     }
 
@@ -844,7 +844,7 @@ int oltiot_report_del_dev(const std::vector<did_item_t>& devices)
 
     if (devices.empty()) 
     {
-        std::cerr << "[Dev.Reg] devices is empty, skip sending" << std::endl;
+        std::cerr << "[oltiot_report_del_dev] devices is empty, skip sending" << std::endl;
         return OLTIOT_COMM_FAILURE; 
     }
 
@@ -883,7 +883,7 @@ int oltiot_read_pids(std::string did, int sid, int pid)
 
 int oltiot_write_pids(std::string did, int sid, int pid, int val)
 {
-    std::cout << "[oltiot_devobj] Write PID: DID=" << did
+    std::cout << "[oltiot_write_pids] Write PID: DID=" << did
               << " SID=" << sid
               << " PID=" << pid
               << " VAL=" << val << std::endl;
@@ -892,7 +892,7 @@ int oltiot_write_pids(std::string did, int sid, int pid, int val)
 
 int oltiot_do_fids(std::string did, int sid, int fid, int val)
 {
-    std::cout << "[oltiot_devobj] Do FID: DID=" << did
+    std::cout << "[oltiot_do_fids] Do FID: DID=" << did
               << " SID=" << sid
               << " FID=" << fid
               << " VAL=" << val << std::endl;
@@ -901,7 +901,7 @@ int oltiot_do_fids(std::string did, int sid, int fid, int val)
 
 int oltiot_dev_disc(int type, int duration)
 {
-    std::cout << "[oltiot_devobj] Do Disc: Type=" << type
+    std::cout << "[oltiot_dev_disc] Do Disc: Type=" << type
               << " Duration=" << duration << std::endl;
     return OLTIOT_COMM_SUCCESS;
 }
@@ -913,26 +913,26 @@ int oltiot_dev_stop_disc()
 
 int oltiot_dev_add_sub(std::string did, int duration)
 {
-    std::cout << "[oltiot_devobj] Add Sub: DID=" << did
+    std::cout << "[oltiot_dev_add_sub] Add Sub: DID=" << did
               << " Duration=" << duration << std::endl;
     return OLTIOT_COMM_SUCCESS;
 }
 
 int oltiot_dev_del_sub(std::string did)
 {
-    std::cout << "[oltiot_devobj] Delete Sub: DID=" << did << std::endl;
+    std::cout << "[oltiot_dev_del_sub] Delete Sub: DID=" << did << std::endl;
     return OLTIOT_COMM_SUCCESS;
 }
 
 int oltiot_dev_del_allsub()
 {
-    std::cout << "[oltiot_devobj] Delete All Sub" << std::endl;
+    std::cout << "[oltiot_dev_del_allsub] Delete All Sub" << std::endl;
     return OLTIOT_COMM_SUCCESS;
 }
 
 int oltiot_dev_gettime(long long timestamp)
 {
-    std::cout << "[oltiot_devobj] Get Time: Timestamp=" << timestamp << std::endl;
+    std::cout << "[oltiot_dev_gettime] Get Time: Timestamp=" << timestamp << std::endl;
     return OLTIOT_COMM_SUCCESS;
 }
 

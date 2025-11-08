@@ -10,10 +10,10 @@
 int main()
 {
     oltiot_init();
-    g_retry_manager.start(); // ✅ 启动重传管理器线程
+    g_retry_manager.start(); 
     cli_init();
     cli_start(true);
-    std::cout << "\n✅ Running... (press Ctrl+C to exit)" << std::endl;
+    std::cout <<"\n[main]" <<" Running... (press Ctrl+C to exit)" << std::endl;
     
     // 主线程保持运行，用于维持 MQTT 长连接
     while (true) {
