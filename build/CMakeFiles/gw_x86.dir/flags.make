@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/usr/local/openssl-x86/include -I/usr/local/paho-mqtt-cpp-x86/include -I/home/cyg/mqtt_x86/mqtt.client/rapidjson/include -I/home/cyg/mqtt_x86/mqtt.client/gw_x86/src -I/home/cyg/mqtt_x86/mqtt.client/gw_x86/src/oltiot
+CXX_INCLUDES = -I/usr/local/openssl-x86/include -I/usr/local/paho-mqtt-cpp-x86/include -I/home/cyg/mqtt_x86/mqtt.client/rapidjson/include -I/home/cyg/mqtt_x86/mqtt.client/gw_x86/src -I/home/cyg/mqtt_x86/mqtt.client/gw_x86/src/oltiot -I/home/cyg/mqtt_x86/mqtt.client/gw_x86/src/cli
 
 CXX_FLAGS = -std=gnu++17
 

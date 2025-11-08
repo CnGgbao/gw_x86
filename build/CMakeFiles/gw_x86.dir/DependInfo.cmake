@@ -8,6 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
+  "/home/cyg/mqtt_x86/mqtt.client/gw_x86/src/cli/cli.cpp" "CMakeFiles/gw_x86.dir/cli/cli.cpp.o" "gcc" "CMakeFiles/gw_x86.dir/cli/cli.cpp.o.d"
   "/home/cyg/mqtt_x86/mqtt.client/gw_x86/src/main.cpp" "CMakeFiles/gw_x86.dir/main.cpp.o" "gcc" "CMakeFiles/gw_x86.dir/main.cpp.o.d"
   "/home/cyg/mqtt_x86/mqtt.client/gw_x86/src/oltiot/oltiot.cpp" "CMakeFiles/gw_x86.dir/oltiot/oltiot.cpp.o" "gcc" "CMakeFiles/gw_x86.dir/oltiot/oltiot.cpp.o.d"
   "/home/cyg/mqtt_x86/mqtt.client/gw_x86/src/oltiot/oltiot_comm.cpp" "CMakeFiles/gw_x86.dir/oltiot/oltiot_comm.cpp.o" "gcc" "CMakeFiles/gw_x86.dir/oltiot/oltiot_comm.cpp.o.d"

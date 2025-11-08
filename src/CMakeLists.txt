@@ -3,7 +3,7 @@ project(gw_x86)
 
 # ==== 子目录 ====
 add_subdirectory(oltiot)
-
+add_subdirectory(cli)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -32,6 +32,7 @@ include_directories(
     ${RAPIDJSON_INCLUDE_DIR}         # ✅ 加入 RapidJSON
     ${CMAKE_CURRENT_SOURCE_DIR}      # 项目自身头文件
     ${OLTIOT_INCLUDE_DIR}            # ✅ 引入子目录头文件
+    ${CLI_INCLUDE_DIR}            # ✅ 引入子目录头文件
 )
 
 # ==== 源文件列表 ====
@@ -41,6 +42,7 @@ file(GLOB SRC_MAIN "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
 set(SOURCES
     ${SRC_MAIN}
     ${OLTIOT_SRC}
+    ${CLI_SRC}
 )
 
 # ==== 可执行文件 ====

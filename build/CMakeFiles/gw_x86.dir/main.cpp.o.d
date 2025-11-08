@@ -273,4 +273,5 @@ CMakeFiles/gw_x86.dir/main.cpp.o: \
  /home/cyg/mqtt_x86/mqtt.client/rapidjson/include/rapidjson/internal/itoa.h \
  /home/cyg/mqtt_x86/mqtt.client/rapidjson/include/rapidjson/internal/itoa.h \
  /home/cyg/mqtt_x86/mqtt.client/rapidjson/include/rapidjson/stringbuffer.h \
- /usr/include/c++/13/atomic
+ /usr/include/c++/13/atomic \
+ /home/cyg/mqtt_x86/mqtt.client/gw_x86/src/cli/cli.h

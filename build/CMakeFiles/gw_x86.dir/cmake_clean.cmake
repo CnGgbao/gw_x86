@@ -1,4 +1,6 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/gw_x86.dir/cli/cli.cpp.o"
+  "CMakeFiles/gw_x86.dir/cli/cli.cpp.o.d"
   "CMakeFiles/gw_x86.dir/main.cpp.o"
   "CMakeFiles/gw_x86.dir/main.cpp.o.d"
   "CMakeFiles/gw_x86.dir/oltiot/oltiot.cpp.o"

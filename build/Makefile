@@ -129,6 +129,30 @@ gw_x86/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/gw_x86.dir/build.make CMakeFiles/gw_x86.dir/build
 .PHONY : gw_x86/fast
 
+cli/cli.o: cli/cli.cpp.o
+.PHONY : cli/cli.o
+
+# target to build an object file
+cli/cli.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/gw_x86.dir/build.make CMakeFiles/gw_x86.dir/cli/cli.cpp.o
+.PHONY : cli/cli.cpp.o
+
+cli/cli.i: cli/cli.cpp.i
+.PHONY : cli/cli.i
+
+# target to preprocess a source file
+cli/cli.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/gw_x86.dir/build.make CMakeFiles/gw_x86.dir/cli/cli.cpp.i
+.PHONY : cli/cli.cpp.i
+
+cli/cli.s: cli/cli.cpp.s
+.PHONY : cli/cli.s
+
+# target to generate assembly for a file
+cli/cli.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/gw_x86.dir/build.make CMakeFiles/gw_x86.dir/cli/cli.cpp.s
+.PHONY : cli/cli.cpp.s
+
 main.o: main.cpp.o
 .PHONY : main.o
 
@@ -234,6 +258,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... gw_x86"
+	@echo "... cli/cli.o"
+	@echo "... cli/cli.i"
+	@echo "... cli/cli.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
