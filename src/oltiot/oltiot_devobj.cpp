@@ -5,8 +5,8 @@
 #include <oltiot_comm.h>
 #include <mutex>
 
-int oltiot_read_pids(std::string did, int sid, int pid);
-int oltiot_write_pids(std::string did, int sid, int pid, int val);
+value_entry_t oltiot_read_pids(std::string did, int sid, int pid);
+int oltiot_write_pids(std::string did, int sid, int pid, const value_entry_t& val);
 int oltiot_do_fids(std::string did, int sid, int fid, int val);
 int oltiot_dev_disc(int type, int duration);
 int oltiot_dev_stop_disc();
@@ -119,12 +119,25 @@ void readpids_handle(const oltiot_msg_req_t* req, void* arg) {
         int pid = item["pid"].GetInt();
 
         // 调用底层获取值
-        int val = oltiot_read_pids(did, sid, pid);
+        value_entry_t val_entry = oltiot_read_pids(did, sid, pid);
 
         Value obj(kObjectType);
         obj.AddMember("sid", sid, alloc);
         obj.AddMember("pid", pid, alloc);
-        obj.AddMember("val", val, alloc);
+        switch (val_entry.type) {
+            case VALUE_TYPE_INT:
+            {
+                int int_val = std::stoi(val_entry.value);
+                obj.AddMember("val", int_val, alloc);
+                break;
+            }
+            case VALUE_TYPE_STRING:
+            {
+                obj.AddMember("val", Value(val_entry.value.c_str(), alloc), alloc);
+                break;
+            }
+ 
+        }
 
         pids_arr.PushBack(obj, alloc);
     }
@@ -198,10 +211,26 @@ void writepids_handle(const oltiot_msg_req_t* req, void* arg) {
         }
 
         int pid = item["pid"].GetInt();
-        int val = item["val"].GetInt();
+        const auto& v = item["val"];
+        value_entry_t pv;
 
-        // 调用底层获取值
-        result = oltiot_write_pids(did, sid, pid, val);
+        if (v.IsInt()) {
+            pv.type = VALUE_TYPE_INT;
+            pv.value = std::to_string(v.GetInt());
+        } else if (v.IsDouble()) {
+            pv.type = VALUE_TYPE_DOUBLE;
+            pv.value = std::to_string(v.GetDouble());
+        } else if (v.IsBool()) {
+            pv.type = VALUE_TYPE_BOOL;
+            pv.value = v.GetBool() ? "true" : "false";
+        } else if (v.IsString()) {
+            pv.type = VALUE_TYPE_STRING;
+            pv.value = v.GetString();
+        } else {
+            pv.type = VALUE_TYPE_UNKNOWN;
+            pv.value = "";
+        }
+        result = oltiot_write_pids(did, sid, pid, pv);
     }
 
     // ====================== 发送响应 ======================
@@ -702,7 +731,20 @@ int oltiot_report_pids(const property_item_t& prop)
         Value pid_obj(kObjectType);
         pid_obj.AddMember("sid", pid.sid, allocator);
         pid_obj.AddMember("pid", pid.pid, allocator);
-        pid_obj.AddMember("val", pid.val, allocator);
+
+        switch (pid.val.type) {
+            case VALUE_TYPE_INT: {
+                int int_val = 0;
+                int_val = std::stoi(pid.val.value); // 假设整数存 string
+                pid_obj.AddMember("val", int_val, allocator);
+                break;
+            }
+            case VALUE_TYPE_STRING: {
+                pid_obj.AddMember("val", Value(pid.val.value.c_str(), allocator), allocator);
+                break;
+            }
+        }
+
         pids_arr.PushBack(pid_obj, allocator);
     }
     properties_obj.AddMember("pids", pids_arr, allocator);
@@ -875,18 +917,21 @@ int oltiot_report_del_dev(const std::vector<did_item_t>& devices)
     return oltiot_send_message(req);
 }
 
-int oltiot_read_pids(std::string did, int sid, int pid)
+value_entry_t oltiot_read_pids(std::string did, int sid, int pid)
 {
-    int val = 0;
-    return val;
+    value_entry_t value;
+    value.type = VALUE_TYPE_INT;
+    value.value = "12345";
+    return value;
 }
 
-int oltiot_write_pids(std::string did, int sid, int pid, int val)
+int oltiot_write_pids(std::string did, int sid, int pid, const value_entry_t& val)
 {
-    std::cout << "[oltiot_write_pids] Write PID: DID=" << did
+    std::cout << "[oltiot_write_pids] DID=" << did
               << " SID=" << sid
               << " PID=" << pid
-              << " VAL=" << val << std::endl;
+              << " TYPE=" << val.type
+              << " VALUE=" << val.value << std::endl;
     return OLTIOT_COMM_SUCCESS;
 }
 

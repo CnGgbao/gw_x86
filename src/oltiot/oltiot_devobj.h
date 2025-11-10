@@ -4,10 +4,28 @@
 #include <iostream>
 #include <vector>
 
+
+
+enum value_type_t {
+    VALUE_TYPE_BOOL = 1,
+    VALUE_TYPE_INT,
+    VALUE_TYPE_STRING,
+    VALUE_TYPE_ENUM,
+    VALUE_TYPE_DOUBLE,
+    VALUE_TYPE_OBJECT,
+    VALUE_TYPE_ARRAY,
+    VALUE_TYPE_UNKNOWN
+};
+
+struct value_entry_t {
+    int type;
+    std::string value;
+};
+
 struct pid_item_t {
     int sid;
     int pid;
-    int val;
+    value_entry_t val;
 };
 
 struct property_item_t {
@@ -50,6 +68,9 @@ struct dev_item_t {
     int connectType;
     int sleepTime;
 };
+
+
+
 
 void oltiot_devobj_register();
 int oltiot_get_time(oltiot_msg_req_t& req);
