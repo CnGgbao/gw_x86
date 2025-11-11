@@ -154,7 +154,7 @@ void callback::connected(const std::string& cause) {
     // oltiot_gateway_reg(properties);
 
     /*report dev test*/
-    // std::vector<dev_item_t> devs ={{"0120030433060707", "WG001", 1, "1.0.0", "0x10", 1 , 1, 28800}};
+    //std::vector<dev_item_t> devs ={{"011125092403004F", "WG001", 1, "1.0.0", "0x10", 1 , 1, 28800}};
     // std::vector<dev_item_t> devs ={{"0120030533060707", "WG001", 1, "1.0.0", "0x10", 1 , 1, 28800},{"0120030633060707", "WG001", 1, "1.0.0", "0x10", 1 , 1, 28800}};
     // oltiot_report_dev(devs);
 

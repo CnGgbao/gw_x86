@@ -60,7 +60,7 @@ struct gateway_base_info_t
 
 struct dev_item_t {
     std::string did;
-    std::string productModel;
+    int productModel;
     int profileId;
     std::string mcu;
     std::string productType;

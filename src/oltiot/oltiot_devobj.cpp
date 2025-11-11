@@ -539,7 +539,7 @@ void read_sublist_handle(const oltiot_msg_req_t* req, void* arg) {
         Value dev(kObjectType);
 
         dev.AddMember("did",          Value(d.did.c_str(), alloc), alloc);
-        dev.AddMember("productModel", Value(d.productModel.c_str(), alloc), alloc);
+        dev.AddMember("productModel", d.productModel, alloc);
         dev.AddMember("profileId",    d.profileId, alloc);
         dev.AddMember("mcu",          Value(d.mcu.c_str(), alloc), alloc);
         dev.AddMember("productType",  Value(d.productType.c_str(), alloc), alloc);
@@ -658,7 +658,7 @@ int oltiot_get_time(oltiot_msg_req_t& req)
     if (req.seq.empty())     req.seq    = generate_seq();
     req.params = nullptr;    // 没有参数
 
-    return oltiot_send_message(req);
+    return oltiot_comm_send_guaranteed(req);
 }
 
 int oltiot_gateway_reg(const gateway_base_info_t& properties)
@@ -693,7 +693,7 @@ int oltiot_gateway_reg(const gateway_base_info_t& properties)
   
 
     // 调用发送接口
-    return oltiot_send_message(req);
+    return oltiot_comm_send_guaranteed(req);
 }
 
 int oltiot_report_pids(const property_item_t& prop)
@@ -754,7 +754,7 @@ int oltiot_report_pids(const property_item_t& prop)
 
     req.topic  = "olt/report/pid/" + prop.did;
     // 发送
-    return oltiot_send_message(req);
+    return oltiot_comm_send_guaranteed(req);
 }
 
 
@@ -789,7 +789,7 @@ int oltiot_report_eids(const eid_item_t& eids)
     req.topic  = "olt/report/eid/" + eids.did + "/" + std::to_string(eids.eid);
 
     // 调用底层发送函数
-    return oltiot_send_message(req);
+    return oltiot_comm_send_guaranteed(req);
 }
 
 int oltiot_report_dev(const std::vector<dev_item_t>& devices)
@@ -822,7 +822,7 @@ int oltiot_report_dev(const std::vector<dev_item_t>& devices)
     for (const auto& dev : devices) {
         Value dev_obj(kObjectType);
         dev_obj.AddMember("did", Value(dev.did.c_str(), alloc), alloc);
-        dev_obj.AddMember("productModel", Value(dev.productModel.c_str(), alloc), alloc);
+        dev_obj.AddMember("productModel", dev.productModel, alloc);
         dev_obj.AddMember("profileId", dev.profileId, alloc);
         dev_obj.AddMember("mcu", Value(dev.mcu.c_str(), alloc), alloc);
         dev_obj.AddMember("productType", Value(dev.productType.c_str(), alloc), alloc);
@@ -876,7 +876,7 @@ int oltiot_report_online(const std::vector<online_item_t>& devices)
     doc.AddMember("devices", devices_arr, alloc);
 
     // === 发送 ===
-    return oltiot_send_message(req);
+    return oltiot_comm_send_guaranteed(req);
 }
 
 
@@ -914,7 +914,7 @@ int oltiot_report_del_dev(const std::vector<did_item_t>& devices)
     doc.AddMember("devices", devices_arr, alloc);
 
     // === 发送 ===
-    return oltiot_send_message(req);
+    return oltiot_comm_send_guaranteed(req);
 }
 
 value_entry_t oltiot_read_pids(std::string did, int sid, int pid)
@@ -986,7 +986,7 @@ std::vector<dev_item_t> get_all_sub_dev_info()
     std::vector<dev_item_t> devices;
     dev_item_t dev;
     dev.did = "0111030405060707";
-    dev.productModel = "1LT0151-000-001";
+    dev.productModel = 0x02;
     dev.profileId    = 1;
     dev.mcu          = "1.0.0";
     dev.productType  = "0x10";

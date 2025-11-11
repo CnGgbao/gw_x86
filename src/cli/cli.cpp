@@ -11,6 +11,8 @@
 #include <sstream>
 #include <algorithm>
 #include <memory>
+#include "oltiot_devobj.h"
+
 
 using CommandExecutor = std::function<int(const std::vector<std::string>& args)>;
 
@@ -173,11 +175,57 @@ namespace {
         return 0;
     }
     
+    int cli_dev_sub_add(const std::vector<std::string>& args) {
+        std::cout << "cli_dev_sub_add" << std::endl;
+        std::cout << "Total arguments received: " << args.size() << std::endl;
+        for(size_t i = 0; i < args.size(); ++i) {
+            std::cout << "  arg[" << i << "]: " << args[i] << std::endl;
+        }
+        std::string did = args[1];
+        std::vector<dev_item_t> devs ={{"011125092403004F", 2, 1, "1:0.0", "0x10", 1 , 1, 28800}};
+        devs[0].did = did;
+        oltiot_report_dev(devs);
+
+        return 0;
+    }
+
+    int cli_dev_report_pids(const std::vector<std::string>& args) {
+        std::cout << "cli_dev_report_pids" << std::endl;
+        std::cout << "Total arguments received: " << args.size() << std::endl;
+        for (size_t i = 0; i < args.size(); ++i) {
+            std::cout << "  arg[" << i << "]: " << args[i] << std::endl;
+        }
+
+        if (args.size() < 4) {
+            std::cerr << "Usage: cli_dev_report_pids <did> <pid> <value>" << std::endl;
+            return -1;
+        }
+
+        std::string did = args[1];
+
+        pid_item_t item;
+        item.sid = 1;
+        item.pid = std::stoi(args[2]);
+        item.val.type = VALUE_TYPE_INT;
+        item.val.value = args[3];
+
+        std::vector<pid_item_t> pids;
+        pids.push_back(item);
+
+        property_item_t prop = {did, pids};
+        oltiot_report_pids(prop);
+
+        return 0;
+    }
+
+
     std::vector<CommandEntry> g_command_list = {
         {"help",         cli_help_command},
         {"h",            cli_help_command},
         {"info",         cli_info_command},
         {"test",         cli_test},
+        {"dev_sub_add",  cli_dev_sub_add},
+        {"dev_report_pids", cli_dev_report_pids}
     };
 
     std::unique_ptr<CliFramework> g_cli;
