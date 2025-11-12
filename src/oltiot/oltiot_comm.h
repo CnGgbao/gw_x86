@@ -94,6 +94,7 @@ extern std::list<oltiot_comm_reg_node_t> reg_list;
 struct RetransmitInfo {
     oltiot_msg_req_t req; // 存储完整的请求消息
     std::chrono::steady_clock::time_point last_sent_time; // 上次发送时间
+    std::chrono::steady_clock::time_point first_sent_time; // 首次发送时间
     int retry_count;
 };
 

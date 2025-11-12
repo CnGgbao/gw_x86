@@ -12,7 +12,7 @@ std::mutex reg_list_mutex;
 std::list<oltiot_comm_reg_node_t> reg_list;
 
 // 参数: 最小间隔(5s), 递增量(5s), 最大间隔(60s)
-AsyncRetryManager g_retry_manager(5, 5, 60);
+AsyncRetryManager g_retry_manager(5, 5, 20);
 
 void oltiot_msg_handle_reg(const oltiot_msg_reg_t* reg, oltiot_msg_reg_cb cb, void* arg)
 {
@@ -379,6 +379,9 @@ void AsyncRetryManager::stop() {
 /**
  * @brief 后台重传线程
  */
+/**
+ * @brief 后台重传线程
+ */
 void AsyncRetryManager::run_worker() {
     // 循环间隔
     const auto loop_interval = std::chrono::seconds(5);
@@ -388,23 +391,41 @@ void AsyncRetryManager::run_worker() {
         std::vector<oltiot_msg_req_t> messages_to_resend;
         auto now = std::chrono::steady_clock::now();
 
-        // 1. 检查哪些消息需要重传
+        // 1. 检查哪些消息需要重传或放弃
         {
             std::unique_lock<std::mutex> lock(mutex_); 
-            for (auto it = in_flight_messages_.begin(); it != in_flight_messages_.end(); ++it) {
+            
+            // 注意：遍历方式已修改，因为我们可能在循环中删除元素
+            for (auto it = in_flight_messages_.begin(); it != in_flight_messages_.end(); /* 手动递增 */) {
                 
+                // ===== 检查 1：总超时 (您的新需求) =====
+                // 检查从 *首次* 发送到现在是否已超过 max_interval_
+                auto total_elapsed = now - it->second.first_sent_time;
+
+                if (total_elapsed > max_interval_) {
+                    std::cerr << "[RetryManager] ❌ Giving up on message SEQ: " 
+                              << it->second.req.seq 
+                              << ". Total lifetime exceeded (" << max_interval_.count() << "s)." << std::endl;
+                    
+                    // 达到最大累积时间，移除该消息，停止重传
+                    it = in_flight_messages_.erase(it);
+                    continue; // 继续检查下一个
+                }
+
+                // ===== 检查 2：是否到达重传时间 (原逻辑) =====
+                
+                // 计算 *下一次* 重传的间隔 (基于 min + inc * count)
                 long long current_delay_sec = min_interval_.count() + (it->second.retry_count * increment_.count());
                 
-                if (current_delay_sec > max_interval_.count()) {
-                    current_delay_sec = max_interval_.count();
-                }
-                
-                // 构造 chrono::seconds 对象用于比较
+                // [重要] 我们不再需要用 max_interval_ 来限制 current_delay_sec
+                // 因为 max_interval_ 已经在 检查1 中用于总超时了。
+                // (原始代码中的 "if (current_delay_sec > max_interval_.count())" 逻辑已移除)
+
                 std::chrono::seconds required_delay(current_delay_sec);
 
-                auto time_since_sent = now - it->second.last_sent_time;
+                auto time_since_last_sent = now - it->second.last_sent_time;
                 
-                if (time_since_sent >= required_delay) { // ✅ 使用动态计算的间隔
+                if (time_since_last_sent >= required_delay) { // ✅ 到达重传时间点
                     std::cout << "[RetryManager] Resending message for method: " 
                               << it->second.req.method << ", SEQ: " << it->second.req.seq 
                               << ". Delay: " << required_delay.count() << "s" 
@@ -415,15 +436,17 @@ void AsyncRetryManager::run_worker() {
                     it->second.last_sent_time = now;
                     it->second.retry_count++;
                 }
+
+                ++it; // 手动移动到下一个元素
             }
         } // 互斥锁在这里释放
 
-        // 2. 执行重传（在锁外发送，避免死锁）
+        // 2. 执行重传 (不变)
         for (const auto& req : messages_to_resend) {
             oltiot_send_message(req); // 调用底层的发送函数
         }
 
-        // 3. 高效休眠，直到被 stop() 唤醒或超时
+        // 3. 高效休眠 (不变)
         std::unique_lock<std::mutex> lock(mutex_);
         cv_.wait_for(lock, loop_interval, [this]{ return stop_flag_.load(); });
     }
@@ -433,8 +456,11 @@ void AsyncRetryManager::run_worker() {
 void AsyncRetryManager::add_for_retry(const oltiot_msg_req_t& req) {
     RetransmitInfo info;
     info.req = req; // 存储副本
+    
+    info.first_sent_time = std::chrono::steady_clock::now();
     info.last_sent_time = std::chrono::steady_clock::now();
-    info.retry_count = 0; // ✅ 第一次发送（未重试），计数为 0
+
+    info.retry_count = 0;
 
     {
         std::lock_guard<std::mutex> lock(mutex_);

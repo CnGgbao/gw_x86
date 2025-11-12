@@ -66,7 +66,7 @@ struct dev_item_t {
     std::string productType;
     int powerType;
     int connectType;
-    int sleepTime;
+    int heartbeat;
 };
 
 
