@@ -18,6 +18,8 @@ using CommandExecutor = std::function<int(const std::vector<std::string>& args)>
 
 struct CommandEntry {
     std::string name;
+    std::string desc;
+    std::string usage;
     CommandExecutor executor;
 };
 
@@ -148,13 +150,119 @@ private:
 
 namespace {
 
+    size_t get_visual_width(const std::string& str) {
+        size_t width = 0;
+        for (size_t i = 0; i < str.length(); ) {
+            unsigned char c = str[i];
+            if (c <= 0x7F) {
+                // ASCII 字符 (1 字节, 1 栏)
+                width += 1;
+                i += 1;
+            } else if ((c & 0xF0) == 0xE0) {
+                // 3 字节 UTF-8 字符 (通常是中文，占 2 栏)
+                width += 2;
+                i += 3; // 跳过 3 字节
+            } else {
+                // 其他多字节字符 (例如 2 字节或 4 字节，这里简化处理为 1 栏)
+                width += 1;
+                i += 1; 
+            }
+        }
+        return width;
+    }
+
+    // **在这里添加前置声明**
+    int cli_help_command(const std::vector<std::string>& args);
+    int cli_info_command(const std::vector<std::string>& args);
+    int cli_list_commands(const std::vector<std::string>& args);
+    int cli_test(const std::vector<std::string>& args);
+    int cli_dev_sub_add(const std::vector<std::string>& args);
+    int cli_dev_report_pids(const std::vector<std::string>& args);
+    int cli_gateway_reg(const std::vector<std::string>& args);
+    int cli_dev_report_eids(const std::vector<std::string>& args);
+    int cli_dev_report_online(const std::vector<std::string>& args);
+    int cli_dev_del_dev(const std::vector<std::string>& args);
+
+    std::vector<CommandEntry> g_command_list = {
+        // NAME               DESCRIPTION               USAGE                                                                                           EXECUTOR
+        {"help",              "显示帮助信息",           "<none>",                                                                                             cli_help_command},
+        {"h",                 "help 的简写",            "<none>",                                                                                             cli_help_command},
+        {"info",              "显示 CLI 框架信息",      "<none>",                                                                                             cli_info_command},
+        {"list",              "显示当前所有命令",       "<none>",                                                                                             cli_list_commands},
+        {"test",              "测试命令",               "<none>",                                                                                             cli_test},
+        {"dev_sub_add",       "添加子设备",             "<did> <productModel> <profileId> <mcu> <productType> <powerType> <connectType> <heartbeat>",   cli_dev_sub_add},
+        {"dev_report_pids",   "上报 PID 属性",          "<did> <pid> <value>",                                                                          cli_dev_report_pids},
+        {"gateway_reg",       "注册网关设备",           "<did> <productModel> <profileId> <mcu> <productType>",                                         cli_gateway_reg},
+        {"dev_report_eids",   "上报 EID 事件",          "<did> <sid> <eid> <val>",                                                                      cli_dev_report_eids},
+        {"dev_report_online", "上报设备在线状态",       "<did> <online(0|1)>",                                                                          cli_dev_report_online},
+        {"dev_del_dev",       "删除子设备",             "<did>",                                                                                        cli_dev_del_dev},
+    };
     int cli_help_command(const std::vector<std::string>& args) {
-        std::cout << "  C++ CMD LIST:" << std::endl;
-        std::cout << "            help (h)" << std::endl;
-        std::cout << "            info" << std::endl;
-        std::cout << "            exit (q, quit)" << std::endl;
+        // 定义每列分配的固定宽度 (栏数)
+        const int NAME_COL_WIDTH = 20;
+        const int DESC_COL_WIDTH = 25; 
+        const int MIN_TOTAL_WIDTH = 80; // 最小宽度
+
+        // 1. 计算最大所需宽度
+        int max_content_width = 0;
+        
+        // 计算表头宽度
+        int header_width = 2 + NAME_COL_WIDTH + DESC_COL_WIDTH + (int)get_visual_width("USAGE");
+        max_content_width = std::max(max_content_width, header_width);
+
+        for (const auto& entry : g_command_list) {
+            // 2 (缩进) + NAME_COL_WIDTH (固定填充) + DESC_COL_WIDTH (固定填充) + USAGE 宽度
+            int current_row_width = 2 + NAME_COL_WIDTH + DESC_COL_WIDTH + (int)get_visual_width(entry.usage);
+            if (current_row_width > max_content_width) {
+                max_content_width = current_row_width;
+            }
+        }
+        
+        int final_width = std::max(max_content_width, MIN_TOTAL_WIDTH);
+
+        // 2. 格式化顶部/底部线
+        std::string header_text = " CLI HELP ";
+        size_t header_len = get_visual_width(header_text);
+        int pad_len = std::max(1, (final_width - (int)header_len) / 2);
+        
+        std::string header_line = std::string(pad_len, '=') + header_text + std::string(final_width - pad_len - (int)header_len, '=');
+
+
+        // 3. 打印输出
+        std::cout << header_line << std::endl;
+        std::cout << "输入以下命令之一执行操作：" << std::endl;
+        std::cout << "退出请输入 'exit' 或 'q'" << std::endl;
+        std::cout << "\n可用命令：" << std::endl;
+        
+        // 打印表头: NAME, DESCRIPTION, USAGE
+        std::cout << "  NAME" << std::string(NAME_COL_WIDTH - 4, ' ') 
+                  << "DESCRIPTION" << std::string(DESC_COL_WIDTH - 11, ' ') 
+                  << "USAGE" << std::endl;
+                  
+        // 打印中间分隔线
+        std::cout << std::string(final_width, '-') << std::endl;
+
+        for (const auto& entry : g_command_list) {
+            size_t name_width = get_visual_width(entry.name);
+            size_t desc_width = get_visual_width(entry.desc);
+            
+            // 1. 打印命令名 NAME (总宽 NAME_COL_WIDTH)
+            std::cout << "  " << entry.name << std::string(std::max(1, NAME_COL_WIDTH - (int)name_width), ' ');
+            
+            // 2. 打印描述 DESCRIPTION (总宽 DESC_COL_WIDTH)
+            std::cout << entry.desc << std::string(std::max(1, DESC_COL_WIDTH - (int)desc_width), ' ');
+            
+            // 3. 打印用法 USAGE
+            std::cout << entry.usage;
+            
+            std::cout << std::endl;
+        }
+
+        // 打印底部线
+        std::cout << header_line << std::endl;
         return 0;
     }
+
 
     int cli_info_command(const std::vector<std::string>& args) {
         std::cout << "C++ CLI Framework Info" << std::endl;
@@ -164,6 +272,57 @@ namespace {
         }
         return 0;
     }
+
+    int cli_list_commands(const std::vector<std::string>& args) {
+        // 定义每列分配的固定宽度 (栏数)
+        const int NAME_COL_WIDTH = 20;
+        const int DESC_COL_WIDTH = 25; 
+        const int MIN_TOTAL_WIDTH = 50; // 最小宽度
+
+        // 1. 计算最大所需宽度
+        int max_content_width = 0;
+        
+        // 计算表头宽度
+        int header_width = 2 + NAME_COL_WIDTH + DESC_COL_WIDTH + (int)get_visual_width("USAGE");
+        max_content_width = std::max(max_content_width, header_width);
+
+        for (const auto& entry : g_command_list) {
+            int current_row_width = 2 + NAME_COL_WIDTH + DESC_COL_WIDTH + (int)get_visual_width(entry.usage);
+            if (current_row_width > max_content_width) {
+                max_content_width = current_row_width;
+            }
+        }
+        
+        int final_width = std::max(max_content_width, MIN_TOTAL_WIDTH);
+
+        std::cout << "[CLI] 当前可用命令：" << std::endl;
+
+        // 打印表头: NAME, DESCRIPTION, USAGE
+        std::cout << "  NAME" << std::string(NAME_COL_WIDTH - 4, ' ') 
+                  << "DESCRIPTION" << std::string(DESC_COL_WIDTH - 11, ' ') 
+                  << "USAGE" << std::endl;
+                  
+        // 打印分隔线
+        std::cout << std::string(final_width, '-') << std::endl;
+
+        for (const auto& entry : g_command_list) {
+            size_t name_width = get_visual_width(entry.name);
+            size_t desc_width = get_visual_width(entry.desc);
+            
+            // 1. 打印命令名 NAME (总宽 NAME_COL_WIDTH)
+            std::cout << "  " << entry.name << std::string(std::max(1, NAME_COL_WIDTH - (int)name_width), ' ');
+            
+            // 2. 打印描述 DESCRIPTION (总宽 DESC_COL_WIDTH)
+            std::cout << entry.desc << std::string(std::max(1, DESC_COL_WIDTH - (int)desc_width), ' ');
+            
+            // 3. 打印用法 USAGE
+            std::cout << entry.usage;
+            
+            std::cout << std::endl;
+        }
+        return 0;
+    }
+
 
     int cli_test(const std::vector<std::string>& args) {
         std::cout << "C++ CLI Test Command Executed" << std::endl;
@@ -181,9 +340,24 @@ namespace {
         for(size_t i = 0; i < args.size(); ++i) {
             std::cout << "  arg[" << i << "]: " << args[i] << std::endl;
         }
-        std::string did = args[1];
-        std::vector<dev_item_t> devs ={{"011125092403004F", 2, 1, "1:0.0", "0x10", 1 , 1, 28800}};
-        devs[0].did = did;
+
+        if (args.size() < 9) {
+            std::cerr << "Usage: dev_sub_add <did> <productModel> <profileId> <mcu> <productType> <powerType> <connectType> <heartbeat>" << std::endl;
+            return -1;
+        }
+
+        std::vector<dev_item_t> devs;
+        dev_item_t item;
+        item.did = args[1];
+        item.productModel = std::stoi(args[2]);
+        item.profileId = std::stoi(args[3]);
+        item.mcu = args[4];
+        item.productType = args[5];
+        item.powerType = std::stoi(args[6]);
+        item.connectType = std::stoi(args[7]);
+        item.heartbeat = std::stoi(args[8]);
+
+        devs.push_back(item);
         oltiot_report_dev(devs);
 
         return 0;
@@ -197,7 +371,7 @@ namespace {
         }
 
         if (args.size() < 4) {
-            std::cerr << "Usage: cli_dev_report_pids <did> <pid> <value>" << std::endl;
+            std::cerr << "Usage: dev_report_pids <did> <pid> <value>" << std::endl;
             return -1;
         }
 
@@ -218,15 +392,93 @@ namespace {
         return 0;
     }
 
+    int cli_gateway_reg(const std::vector<std::string>& args) {
+        std::cout << "cli_gateway_reg" << std::endl;
+        std::cout << "Total arguments received: " << args.size() << std::endl;
+        for(size_t i = 0; i < args.size(); ++i) {
+            std::cout << "  arg[" << i << "]: " << args[i] << std::endl;
+        }
 
-    std::vector<CommandEntry> g_command_list = {
-        {"help",         cli_help_command},
-        {"h",            cli_help_command},
-        {"info",         cli_info_command},
-        {"test",         cli_test},
-        {"dev_sub_add",  cli_dev_sub_add},
-        {"dev_report_pids", cli_dev_report_pids}
-    };
+        if (args.size() < 6) {
+            std::cerr << "Usage: gateway_reg <did> <productModel> <profileId> <mcu> <productType>" << std::endl;
+            return -1;
+        }
+
+        gateway_base_info_t info;
+        info.did = args[1];
+        info.productModel = args[2];
+        info.profileId = std::stoi(args[3]);
+        info.mcu = args[4];
+        info.productType = args[5];
+
+        oltiot_gateway_reg(info);
+        return 0;
+    }
+
+    int cli_dev_report_eids(const std::vector<std::string>& args) {
+        std::cout << "cli_dev_report_eids" << std::endl;
+        std::cout << "Total arguments received: " << args.size() << std::endl;
+        for(size_t i = 0; i < args.size(); ++i) {
+            std::cout << "  arg[" << i << "]: " << args[i] << std::endl;
+        }
+        
+        if (args.size() < 5) {
+            std::cerr << "Usage: dev_report_eids <did> <sid> <eid> <val>" << std::endl;
+            return -1;
+        }
+
+        eid_item_t eid;
+        eid.did = args[1];
+        eid.sid = std::stoi(args[2]);
+        eid.eid = std::stoi(args[3]);
+        eid.val = std::stoi(args[4]);
+        oltiot_report_eids(eid);
+        return 0;
+    }
+
+    int cli_dev_report_online(const std::vector<std::string>& args) {
+        std::cout << "cli_dev_report_online" << std::endl;
+        std::cout << "Total arguments received: " << args.size() << std::endl;
+        for(size_t i = 0; i < args.size(); ++i) {
+            std::cout << "  arg[" << i << "]: " << args[i] << std::endl;
+        }
+
+        if( args.size() < 3) {
+            std::cerr << "Usage: dev_report_online <did> <online>" << std::endl;
+            return -1;
+        }
+
+
+        std::vector<online_item_t> online_list;
+        online_item_t online;
+        online.did = args[1];
+        online.online = (args[2] == "1") ? true : false;
+
+        online_list.push_back(online);
+        oltiot_report_online(online_list);
+        return 0;
+    }
+
+    int cli_dev_del_dev(const std::vector<std::string>& args) {
+        std::cout << "cli_dev_del_dev" << std::endl;
+        std::cout << "Total arguments received: " << args.size() << std::endl;
+        for(size_t i = 0; i < args.size(); ++i) {
+            std::cout << "  arg[" << i << "]: " << args[i] << std::endl;
+        }
+
+        if (args.size() < 2) {
+            std::cerr << "Usage: dev_del_dev <did>" << std::endl;
+            return -1;
+        }
+
+        std::vector<did_item_t> did_list;
+        did_item_t did;
+        did.did = args[1];
+        did_list.push_back(did);
+        oltiot_report_del_dev(did_list);
+        return 0;
+    }
+
 
     std::unique_ptr<CliFramework> g_cli;
 
