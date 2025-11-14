@@ -185,17 +185,17 @@ namespace {
 
     std::vector<CommandEntry> g_command_list = {
         // NAME               DESCRIPTION               USAGE                                                                                           EXECUTOR
-        {"help",              "显示帮助信息",           "<none>",                                                                                             cli_help_command},
-        {"h",                 "help 的简写",            "<none>",                                                                                             cli_help_command},
-        {"info",              "显示 CLI 框架信息",      "<none>",                                                                                             cli_info_command},
-        {"list",              "显示当前所有命令",       "<none>",                                                                                             cli_list_commands},
-        {"test",              "测试命令",               "<none>",                                                                                             cli_test},
-        {"dev_sub_add",       "添加子设备",             "<did> <productModel> <profileId> <mcu> <productType> <powerType> <connectType> <heartbeat>",   cli_dev_sub_add},
-        {"dev_report_pids",   "上报 PID 属性",          "<did> <pid> <value>",                                                                          cli_dev_report_pids},
-        {"gateway_reg",       "注册网关设备",           "<did> <productModel> <profileId> <mcu> <productType>",                                         cli_gateway_reg},
-        {"dev_report_eids",   "上报 EID 事件",          "<did> <sid> <eid> <val>",                                                                      cli_dev_report_eids},
-        {"dev_report_online", "上报设备在线状态",       "<did> <online(0|1)>",                                                                          cli_dev_report_online},
-        {"dev_del_dev",       "删除子设备",             "<did>",                                                                                        cli_dev_del_dev},
+        {"help",              "显示帮助信息",           "<none>",                                                                                               cli_help_command},
+        {"h",                 "help 的简写",            "<none>",                                                                                               cli_help_command},
+        {"info",              "显示 CLI 框架信息",      "<none>",                                                                                               cli_info_command},
+        {"list",              "显示当前所有命令",       "<none>",                                                                                               cli_list_commands},
+        {"test",              "测试命令",               "<none>",                                                                                               cli_test},
+        {"dev_sub_add",       "添加子设备",             "<did> <productModel> <profileId> <mcu> <productType> <powerType> <connectType> <heartbeat>",           cli_dev_sub_add},
+        {"dev_report_pids",   "上报 PID 属性",          "<did> <pid> <value>",                                                                                  cli_dev_report_pids},
+        {"gateway_reg",       "注册网关设备",           "<did> <productModel> <profileId> <mcu> <productType>",                                                 cli_gateway_reg},
+        {"dev_report_eids",   "上报 EID 事件",          "<did> <sid> <eid> <val>",                                                                              cli_dev_report_eids},
+        {"dev_report_online", "上报设备在线状态",       "<did> <online(0|1)>",                                                                                  cli_dev_report_online},
+        {"dev_del_dev",       "删除子设备",             "<did>",                                                                                                cli_dev_del_dev},
     };
     int cli_help_command(const std::vector<std::string>& args) {
         // 定义每列分配的固定宽度 (栏数)
@@ -337,9 +337,9 @@ namespace {
     int cli_dev_sub_add(const std::vector<std::string>& args) {
         std::cout << "cli_dev_sub_add" << std::endl;
         std::cout << "Total arguments received: " << args.size() << std::endl;
-        for(size_t i = 0; i < args.size(); ++i) {
-            std::cout << "  arg[" << i << "]: " << args[i] << std::endl;
-        }
+        // for(size_t i = 0; i < args.size(); ++i) {
+        //     std::cout << "  arg[" << i << "]: " << args[i] << std::endl;
+        // }
 
         if (args.size() < 9) {
             std::cerr << "Usage: dev_sub_add <did> <productModel> <profileId> <mcu> <productType> <powerType> <connectType> <heartbeat>" << std::endl;
@@ -357,6 +357,15 @@ namespace {
         item.connectType = std::stoi(args[7]);
         item.heartbeat = std::stoi(args[8]);
 
+        std::cout <<"did         :" << item.did << std::endl;
+        std::cout <<"productModel:" << item.productModel << std::endl;
+        std::cout <<"profileId   :" << item.profileId << std::endl;
+        std::cout <<"mcu         :" << item.mcu << std::endl;
+        std::cout <<"productType :" << item.productType << std::endl;
+        std::cout <<"powerType   :" << item.powerType << std::endl;
+        std::cout <<"connectType :" << item.connectType << std::endl;
+        std::cout <<"heartbeat   :" << item.heartbeat << std::endl;
+
         devs.push_back(item);
         oltiot_report_dev(devs);
 
@@ -366,9 +375,9 @@ namespace {
     int cli_dev_report_pids(const std::vector<std::string>& args) {
         std::cout << "cli_dev_report_pids" << std::endl;
         std::cout << "Total arguments received: " << args.size() << std::endl;
-        for (size_t i = 0; i < args.size(); ++i) {
-            std::cout << "  arg[" << i << "]: " << args[i] << std::endl;
-        }
+        // for (size_t i = 0; i < args.size(); ++i) {
+        //     std::cout << "  arg[" << i << "]: " << args[i] << std::endl;
+        // }
 
         if (args.size() < 4) {
             std::cerr << "Usage: dev_report_pids <did> <pid> <value>" << std::endl;
@@ -378,10 +387,14 @@ namespace {
         std::string did = args[1];
 
         pid_item_t item;
-        item.sid = 1;
-        item.pid = std::stoi(args[2]);
+        item.sid = 0;
+        item.pid = std::stoi(args[2], nullptr, 16);
         item.val.type = VALUE_TYPE_INT;
         item.val.value = args[3];
+
+        std::cout <<"did      :" << item.sid << std::endl;
+        std::cout <<"pid      :0x" << std::hex << std::uppercase << item.pid  << std::endl;
+        std::cout <<"value    :" << item.val.value << std::endl;
 
         std::vector<pid_item_t> pids;
         pids.push_back(item);
@@ -395,9 +408,9 @@ namespace {
     int cli_gateway_reg(const std::vector<std::string>& args) {
         std::cout << "cli_gateway_reg" << std::endl;
         std::cout << "Total arguments received: " << args.size() << std::endl;
-        for(size_t i = 0; i < args.size(); ++i) {
-            std::cout << "  arg[" << i << "]: " << args[i] << std::endl;
-        }
+        // for(size_t i = 0; i < args.size(); ++i) {
+        //     std::cout << "  arg[" << i << "]: " << args[i] << std::endl;
+        // }
 
         if (args.size() < 6) {
             std::cerr << "Usage: gateway_reg <did> <productModel> <profileId> <mcu> <productType>" << std::endl;
@@ -411,6 +424,11 @@ namespace {
         info.mcu = args[4];
         info.productType = args[5];
 
+        std::cout <<"did         :" << info.did << std::endl;
+        std::cout <<"productModel:" << info.productModel << std::endl;
+        std::cout <<"profileId   :" << info.profileId << std::endl;
+        std::cout <<"mcu         :" << info.mcu << std::endl;
+        std::cout <<"productType :" << info.productType << std::endl;
         oltiot_gateway_reg(info);
         return 0;
     }
@@ -418,9 +436,9 @@ namespace {
     int cli_dev_report_eids(const std::vector<std::string>& args) {
         std::cout << "cli_dev_report_eids" << std::endl;
         std::cout << "Total arguments received: " << args.size() << std::endl;
-        for(size_t i = 0; i < args.size(); ++i) {
-            std::cout << "  arg[" << i << "]: " << args[i] << std::endl;
-        }
+        // for(size_t i = 0; i < args.size(); ++i) {
+        //     std::cout << "  arg[" << i << "]: " << args[i] << std::endl;
+        // }
         
         if (args.size() < 5) {
             std::cerr << "Usage: dev_report_eids <did> <sid> <eid> <val>" << std::endl;
@@ -430,8 +448,14 @@ namespace {
         eid_item_t eid;
         eid.did = args[1];
         eid.sid = std::stoi(args[2]);
-        eid.eid = std::stoi(args[3]);
+        eid.eid = std::stoi(args[3], nullptr, 16);
         eid.val = std::stoi(args[4]);
+
+        std::cout <<"did      :" << eid.did << std::endl;
+        std::cout <<"sid      :" << eid.sid << std::endl;
+        std::cout <<"eid      :0x" << std::hex << std::uppercase << eid.eid << std::endl;
+        std::cout <<"val      :" << eid.val << std::endl;
+
         oltiot_report_eids(eid);
         return 0;
     }
@@ -454,6 +478,9 @@ namespace {
         online.did = args[1];
         online.online = (args[2] == "1") ? true : false;
 
+        std::cout <<"did      :" << online.did << std::endl;
+        std::cout <<"online   :" << online.online << std::endl;
+
         online_list.push_back(online);
         oltiot_report_online(online_list);
         return 0;
@@ -462,9 +489,9 @@ namespace {
     int cli_dev_del_dev(const std::vector<std::string>& args) {
         std::cout << "cli_dev_del_dev" << std::endl;
         std::cout << "Total arguments received: " << args.size() << std::endl;
-        for(size_t i = 0; i < args.size(); ++i) {
-            std::cout << "  arg[" << i << "]: " << args[i] << std::endl;
-        }
+        // for(size_t i = 0; i < args.size(); ++i) {
+        //     std::cout << "  arg[" << i << "]: " << args[i] << std::endl;
+        // }
 
         if (args.size() < 2) {
             std::cerr << "Usage: dev_del_dev <did>" << std::endl;
@@ -474,6 +501,9 @@ namespace {
         std::vector<did_item_t> did_list;
         did_item_t did;
         did.did = args[1];
+
+        std::cout <<"did      :" << did.did << std::endl;
+
         did_list.push_back(did);
         oltiot_report_del_dev(did_list);
         return 0;

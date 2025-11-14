@@ -296,20 +296,22 @@ void dofids_handle(const oltiot_msg_req_t* req, void* arg) {
     // ====================== 发送响应 ======================
     oltiot_ack_resp(req, result);
 
-    std::string did1 = "011125092403004F";
+    // std::this_thread::sleep_for(std::chrono::seconds(3)); 
+    
+    // std::string did1 = "011125092403004F";
 
-    pid_item_t item;
-    item.sid = 1;
-    item.pid = 61;
-    item.val.type = VALUE_TYPE_INT;
-    item.val.value = "255";
+    // pid_item_t item;
+    // item.sid = 1;
+    // item.pid = 61;
+    // item.val.type = VALUE_TYPE_INT;
+    // item.val.value = "255";
 
-    std::vector<pid_item_t> pids;
-    pids.push_back(item);
+    // std::vector<pid_item_t> pids;
+    // pids.push_back(item);
 
 
-    property_item_t prop = {did1, pids};
-    oltiot_report_pids(prop);
+    // property_item_t prop = {did1, pids};
+    // oltiot_report_pids(prop);
 
 }
 
@@ -561,7 +563,7 @@ void read_sublist_handle(const oltiot_msg_req_t* req, void* arg) {
         dev.AddMember("productType",  Value(d.productType.c_str(), alloc), alloc);
         dev.AddMember("powerType",    d.powerType, alloc);
         dev.AddMember("connectType",  d.connectType, alloc);
-        dev.AddMember("heartbeat",    d.heartbeat, alloc);
+        dev.AddMember("heartBeat",    d.heartbeat, alloc);
 
         devs_arr.PushBack(dev, alloc);
     }
@@ -844,12 +846,12 @@ int oltiot_report_dev(const std::vector<dev_item_t>& devices)
         dev_obj.AddMember("productType", Value(dev.productType.c_str(), alloc), alloc);
         dev_obj.AddMember("powerType", dev.powerType, alloc);
         dev_obj.AddMember("connectType", dev.connectType, alloc);
-        dev_obj.AddMember("heartbeat", dev.heartbeat, alloc);
+        dev_obj.AddMember("heartBeat", dev.heartbeat, alloc);
         devices_arr.PushBack(dev_obj, alloc);
     }
 
     doc.AddMember("devices", devices_arr, alloc);
-
+    
     // 调用底层 MQTT 发送
     return oltiot_comm_send_guaranteed(req);
 }

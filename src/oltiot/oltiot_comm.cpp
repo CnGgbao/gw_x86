@@ -305,9 +305,9 @@ int oltiot_send_message(const oltiot_msg_req_t& req)
     {
         return OLTIOT_COMM_PARM_ERROR;
     }
-
+    
     // seq
-    std::string seq = req.seq.empty() ? generate_seq() : req.seq;
+    std::string seq = req.seq;
     doc.AddMember("seq", Value().SetString(seq.c_str(), alloc), alloc);
     // ===== 序列化 JSON =====
     StringBuffer buffer;
@@ -482,8 +482,13 @@ void AsyncRetryManager::on_ack_received(const std::string& seq) {
     }
 }
 
-int oltiot_comm_send_guaranteed(oltiot_msg_req_t req) // 按值传递，获取副本
+int oltiot_comm_send_guaranteed(oltiot_msg_req_t req)
 {
+    if (req.seq.empty()) {
+        std::cerr << "[oltiot_comm_send_guaranteed] Error: req.seq is empty." << std::endl;
+        return OLTIOT_COMM_PARM_ERROR; 
+    }
+
     g_retry_manager.add_for_retry(req);
 
     return oltiot_send_message(req);
