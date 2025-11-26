@@ -27,7 +27,7 @@ extern std::shared_ptr<mqtt::async_client> g_mqtt_client;
 extern std::mutex client_mutex;
 
 void oltiot_init();
-
+bool mqtt_is_connected();
 // ===========================
 // action_listener 类定义
 // ===========================

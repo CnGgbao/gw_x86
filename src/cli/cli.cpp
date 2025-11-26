@@ -12,7 +12,7 @@
 #include <algorithm>
 #include <memory>
 #include "oltiot_devobj.h"
-
+#include "oltiot.h"
 
 using CommandExecutor = std::function<int(const std::vector<std::string>& args)>;
 
@@ -182,6 +182,7 @@ namespace {
     int cli_dev_report_eids(const std::vector<std::string>& args);
     int cli_dev_report_online(const std::vector<std::string>& args);
     int cli_dev_del_dev(const std::vector<std::string>& args);
+    int show_mqtt_is_connected(const std::vector<std::string>& args);
 
     std::vector<CommandEntry> g_command_list = {
         // NAME               DESCRIPTION               USAGE                                                                                           EXECUTOR
@@ -196,6 +197,7 @@ namespace {
         {"dev_report_eids",   "上报 EID 事件",          "<did> <sid> <eid> <val>",                                                                              cli_dev_report_eids},
         {"dev_report_online", "上报设备在线状态",       "<did> <online(0|1)>",                                                                                  cli_dev_report_online},
         {"dev_del_dev",       "删除子设备",             "<did>",                                                                                                cli_dev_del_dev},
+        {"mqtt_is_connected", "MQTT 连接状态",          "<none>",                                                                                               show_mqtt_is_connected},
     };
     int cli_help_command(const std::vector<std::string>& args) {
         // 定义每列分配的固定宽度 (栏数)
@@ -509,6 +511,12 @@ namespace {
         return 0;
     }
 
+    int show_mqtt_is_connected(const std::vector<std::string>& args) {
+        std::cout << "mqtt_is_connected" << std::endl;
+        bool connected = mqtt_is_connected();
+        std::cout << "MQTT Connected: " << (connected ? "Yes" : "No") << std::endl;
+        return 0;
+    }
 
     std::unique_ptr<CliFramework> g_cli;
 

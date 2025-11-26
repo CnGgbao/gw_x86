@@ -17,8 +17,8 @@
 
 
 #define OLTIOT_COMM_SUCCESS              1      //成功
-#define OLTIOT_COMM_PARM_ERROR           10001  //参数错误
-#define OLTIOT_COMM_BUSINESS_ERROR       10002  //业务错误
+#define OLTIOT_COMM_PARM_ERROR           -10001  //参数错误
+#define OLTIOT_COMM_BUSINESS_ERROR       -10002  //业务错误
 #define OLTIOT_COMM_FAILURE OLTIOT_COMM_BUSINESS_ERROR
 
 

@@ -194,3 +194,14 @@ mqtt::iaction_listener& callback::get_sub_listener()
     static action_listener listener("AsyncSub");
     return listener;
 }
+
+bool mqtt_is_connected()
+{
+    std::lock_guard<std::mutex> lock(client_mutex);  // 加锁
+
+    if (!g_mqtt_client) {
+        return false;   // 客户端还没初始化
+    }
+
+    return g_mqtt_client->is_connected();   // 正确调用
+}

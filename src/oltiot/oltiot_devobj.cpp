@@ -5,12 +5,12 @@
 #include <oltiot_comm.h>
 #include <mutex>
 
-value_entry_t oltiot_read_pids(std::string did, int sid, int pid);
+int oltiot_read_pids(const std::string& did, int sid, int pid, value_entry_t& out_value);
 int oltiot_write_pids(std::string did, int sid, int pid, const value_entry_t& val);
 int oltiot_do_fids(std::string did, int sid, int fid, int val);
 int oltiot_dev_disc(int type, int duration);
 int oltiot_dev_stop_disc();
-int oltiot_dev_add_sub(std::string did, int duration);
+int oltiot_dev_add_sub(std::vector< std::string > did_list, int duration);
 int oltiot_dev_del_sub(std::string did);
 int oltiot_dev_del_allsub();
 int oltiot_dev_gettime(long long timestamp);
@@ -118,8 +118,8 @@ void readpids_handle(const oltiot_msg_req_t* req, void* arg) {
         int sid = item["sid"].GetInt();
         int pid = item["pid"].GetInt();
 
-        // 调用底层获取值
-        value_entry_t val_entry = oltiot_read_pids(did, sid, pid);
+        value_entry_t val_entry;
+        result = oltiot_read_pids(did, sid, pid, val_entry);
 
         Value obj(kObjectType);
         obj.AddMember("sid", sid, alloc);
@@ -386,6 +386,7 @@ void dev_addsub_handle(const oltiot_msg_req_t* req, void* arg) {
               << ", topic: " << req->topic << std::endl;
 
     int result = OLTIOT_COMM_SUCCESS;
+    std::vector< std::string > did_list;
 
     // 参数校验
     if (!req || !req->params) {
@@ -417,7 +418,7 @@ void dev_addsub_handle(const oltiot_msg_req_t* req, void* arg) {
         return;
     }
     int duration = doc["duration"].GetInt();
-    
+    oltiot_ack_resp(req, result);
 
     const auto& devices = doc["devices"].GetArray();
     for (const auto& item : devices) 
@@ -429,11 +430,13 @@ void dev_addsub_handle(const oltiot_msg_req_t* req, void* arg) {
 
         std::string did = item.GetString();
         std::cout << "[dev_addsub_handle] device = " << did << std::endl;
-        result = oltiot_dev_add_sub(did, duration);
+        did_list.push_back(did);//从json中解析出设备did并存入列表
     }
 
+    result = oltiot_dev_add_sub(did_list, duration);
+
     // ====================== 发送响应 ======================
-    oltiot_ack_resp(req, result);
+    //oltiot_ack_resp(req, result);
 }
 
 void dev_delsub_handle(const oltiot_msg_req_t* req, void* arg) {
@@ -931,12 +934,13 @@ int oltiot_report_del_dev(const std::vector<did_item_t>& devices)
     return oltiot_comm_send_guaranteed(req);
 }
 
-value_entry_t oltiot_read_pids(std::string did, int sid, int pid)
+int oltiot_read_pids(const std::string& did, int sid, int pid, value_entry_t& out_value)
 {
-    value_entry_t value;
-    value.type = VALUE_TYPE_INT;
-    value.value = "12345";
-    return value;
+    // 读取成功
+    out_value.type = VALUE_TYPE_INT;
+    out_value.value = "12345";
+
+    return OLTIOT_COMM_SUCCESS; 
 }
 
 int oltiot_write_pids(std::string did, int sid, int pid, const value_entry_t& val)
@@ -970,10 +974,14 @@ int oltiot_dev_stop_disc()
     return OLTIOT_COMM_SUCCESS;
 }
 
-int oltiot_dev_add_sub(std::string did, int duration)
+int oltiot_dev_add_sub(std::vector< std::string > did_list, int duration)
 {
-    std::cout << "[oltiot_dev_add_sub] Add Sub: DID=" << did
-              << " Duration=" << duration << std::endl;
+    std::cout << " Duration=" << duration << std::endl;
+
+    for (const auto& did : did_list)
+    {
+        std::cout << "DID=" << did << std::endl;
+    }
     return OLTIOT_COMM_SUCCESS;
 }
 
@@ -1010,7 +1018,7 @@ std::vector<dev_item_t> get_all_sub_dev_info()
 
     devices.push_back(dev);
 
-    return devices;
+    return {};
 }
 
 std::string oltiot_devobj_get_did()
