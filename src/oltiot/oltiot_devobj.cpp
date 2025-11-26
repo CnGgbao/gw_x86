@@ -546,8 +546,6 @@ void read_sublist_handle(const oltiot_msg_req_t* req, void* arg) {
     resp_params->SetObject();
     auto& alloc = resp_params->GetAllocator();
 
-    Value params(kObjectType);
-
     Value devs_arr(kArrayType);
 
     // 获取设备数据
@@ -568,9 +566,7 @@ void read_sublist_handle(const oltiot_msg_req_t* req, void* arg) {
         devs_arr.PushBack(dev, alloc);
     }
 
-    params.AddMember("devices", devs_arr, alloc);
-
-    resp_params->AddMember("params", params, alloc);
+    resp_params->AddMember("devices", devs_arr, alloc);
 
     // ====================== 发送响应 ======================
     oltiot_msg_resp_t to_resp;
@@ -1003,13 +999,13 @@ std::vector<dev_item_t> get_all_sub_dev_info()
 { 
     std::vector<dev_item_t> devices;
     dev_item_t dev;
-    dev.did = "0111030405060707";
+    dev.did = "011125092403004F";
     dev.productModel = 0x02;
-    dev.profileId    = 1;
-    dev.mcu          = "1.0.0";
-    dev.productType  = "0x10";
+    dev.profileId    = 0x02;
+    dev.mcu          = "1:1.0";
+    dev.productType  = "0x11";
     dev.powerType    = 1;
-    dev.connectType  = 1;
+    dev.connectType  = 0;
     dev.heartbeat    = 28800;
 
     devices.push_back(dev);
