@@ -418,7 +418,6 @@ void dev_addsub_handle(const oltiot_msg_req_t* req, void* arg) {
         return;
     }
     int duration = doc["duration"].GetInt();
-    oltiot_ack_resp(req, result);
 
     const auto& devices = doc["devices"].GetArray();
     for (const auto& item : devices) 
@@ -436,7 +435,7 @@ void dev_addsub_handle(const oltiot_msg_req_t* req, void* arg) {
     result = oltiot_dev_add_sub(did_list, duration);
 
     // ====================== 发送响应 ======================
-    //oltiot_ack_resp(req, result);
+    oltiot_ack_resp(req, result);
 }
 
 void dev_delsub_handle(const oltiot_msg_req_t* req, void* arg) {
