@@ -298,7 +298,7 @@ void dofids_handle(const oltiot_msg_req_t* req, void* arg) {
 
     // std::this_thread::sleep_for(std::chrono::seconds(3)); 
     
-    // std::string did1 = "011125092403004F";
+    // std::string did1 = "011225112601000A";
 
     // pid_item_t item;
     // item.sid = 1;

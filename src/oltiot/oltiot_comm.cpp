@@ -252,7 +252,6 @@ int oltiot_msg_resp(const oltiot_msg_resp_t* to_resp)
     // 异步发送，线程安全
     int rc = -1;
     {
-        std::lock_guard<std::mutex> lock(client_mutex);
         if (g_mqtt_client) {
             try {
                 g_mqtt_client->publish(pubmsg);
@@ -325,7 +324,6 @@ int oltiot_send_message(const oltiot_msg_req_t& req)
     // ===== 异步发送，线程安全 =====
     int rc = -1;
     {
-        std::lock_guard<std::mutex> lock(client_mutex);
         if (g_mqtt_client) {
             try {
                 g_mqtt_client->publish(pubmsg);

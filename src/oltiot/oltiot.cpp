@@ -113,61 +113,35 @@ void callback::on_success(const mqtt::token& tok) {
 }
 
 void callback::connected(const std::string& cause) {
-    
     std::cout << "\n[connected] Connected successfully" << std::endl;
-    
+
     if (!cause.empty())
         std::cout << "\tCause: " << cause << std::endl;
 
+    std::list<oltiot_comm_reg_node_t> local_regs;
+
+    {
+        std::lock_guard<std::mutex> lock(reg_list_mutex);
+        local_regs = reg_list;        
+    }   
 
     try {
-        // 遍历全局注册列表，重新订阅
-        std::lock_guard<std::mutex> lock(reg_list_mutex);
-        for (auto& node : reg_list) {
+        for (auto& node : local_regs) {
             const std::string& topic = node.reg.topic;
             int qos = OLTIOT_COMM_QOS;
 
-            std::cout << "[connected] Subscribing topic: '" << topic 
-                      << "' for method: '" << node.reg.method 
-                      << "' with QoS " << qos << std::endl;
+            std::cout << "[connected] Subscribing: '" << topic
+                      << "' method='" << node.reg.method
+                      << "' qos=" << qos << std::endl;
 
-            // 异步订阅，带 action_listener
             client_ptr_->subscribe(topic, qos, nullptr, subListener_);
         }
     }
     catch (const mqtt::exception& exc) {
-        std::cerr << "[connected] Re-subscribe failed: " << exc.what() << std::endl;
+        std::cerr << "[connected] Subscribe failed: " << exc.what() << std::endl;
     }
-
-    /*eid test*/
-    // eid_item_t eids = {"0110030405060707", 1, 8192, 1};
-    // oltiot_report_eids(eids);
-
-
-    /*pid test*/
-    // property_item_t prop = {"0110030405060707", {{1,15,10},{1,16,20}}};
-    // //property_item_t prop = {"0110030405060707", {{1,15,10}}};
-    // oltiot_report_pids(prop);
-
-    /*dev_reg test*/
-    // gateway_base_info_t properties = {oltiot_devobj_get_did(), "WG001", 1, "1.0.0", "0x10"};
-    // oltiot_gateway_reg(properties);
-
-    /*report dev test*/
-    //std::vector<dev_item_t> devs ={{"011125092403004F", "WG001", 1, "1.0.0", "0x10", 1 , 1, 28800}};
-    // std::vector<dev_item_t> devs ={{"0120030533060707", "WG001", 1, "1.0.0", "0x10", 1 , 1, 28800},{"0120030633060707", "WG001", 1, "1.0.0", "0x10", 1 , 1, 28800}};
-    // oltiot_report_dev(devs);
-
-    /*report dev online test*/
-    //std::vector<online_item_t> onlines ={{"0120030433060707", 0}};
-    // std::vector<online_item_t> onlines ={{"0120030533060707", 0},{"0120030633060707", 0}};
-    // oltiot_report_online(onlines);
-
-    /*report dev del test*/
-    // std::vector<did_item_t> dels ={{"0120030433060707"},{"0120030533060707"}};
-    // std::vector<did_item_t> dels ={{"0120030633060707"}};
-    // oltiot_report_del_dev(dels);
 }
+
 
 
 void callback::connection_lost(const std::string& cause) {
@@ -197,8 +171,6 @@ mqtt::iaction_listener& callback::get_sub_listener()
 
 bool mqtt_is_connected()
 {
-    std::lock_guard<std::mutex> lock(client_mutex);  // 加锁
-
     if (!g_mqtt_client) {
         return false;   // 客户端还没初始化
     }
