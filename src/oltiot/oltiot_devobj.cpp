@@ -295,24 +295,6 @@ void dofids_handle(const oltiot_msg_req_t* req, void* arg) {
 
     // ====================== 发送响应 ======================
     oltiot_ack_resp(req, result);
-
-    // std::this_thread::sleep_for(std::chrono::seconds(3)); 
-    
-    // std::string did1 = "011225112601000A";
-
-    // pid_item_t item;
-    // item.sid = 1;
-    // item.pid = 61;
-    // item.val.type = VALUE_TYPE_INT;
-    // item.val.value = "255";
-
-    // std::vector<pid_item_t> pids;
-    // pids.push_back(item);
-
-
-    // property_item_t prop = {did1, pids};
-    // oltiot_report_pids(prop);
-
 }
 
 void dev_disc_handle(const oltiot_msg_req_t* req, void* arg) {
