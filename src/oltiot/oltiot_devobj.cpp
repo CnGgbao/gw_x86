@@ -15,7 +15,8 @@ int oltiot_dev_del_sub(std::string did);
 int oltiot_dev_del_allsub();
 int oltiot_dev_gettime(long long timestamp);
 std::vector<dev_item_t> get_all_sub_dev_info();
-
+int oltiot_dev_force_del_sub(std::string did);
+int oltiot_trigger_pid_report(std::string did, int sid, int pid);
 
 static std::string g_latest_join_seq;
 static std::mutex g_seq_mutex;
@@ -564,6 +565,116 @@ void read_sublist_handle(const oltiot_msg_req_t* req, void* arg) {
     
 }
 
+void dev_trigger_pid_report_handle(const oltiot_msg_req_t* req, void* arg) {
+    using namespace rapidjson;
+    std::cout << "[dev_trigger_pid_report_handle] Callback called for method: " << req->method
+              << ", topic: " << req->topic << std::endl;
+
+    int result = OLTIOT_COMM_SUCCESS;
+
+    // 参数校验
+    if (!req || !req->params) {
+        std::cerr << "[dev_trigger_pid_report_handle] Invalid request: params is null" << std::endl;
+        result = OLTIOT_COMM_PARM_ERROR;
+        oltiot_ack_resp(req, result);
+        return;
+    }
+
+    auto& doc = *req->params;
+
+    // 解析 did
+    if (!doc.HasMember("did") || !doc["did"].IsString()) {
+        std::cerr << "[dev_trigger_pid_report_handle] Missing or invalid 'did'" << std::endl;
+        result = OLTIOT_COMM_PARM_ERROR;
+        oltiot_ack_resp(req, result);
+        return;
+    }
+    std::string did = doc["did"].GetString();
+
+    // 解析 pids[]
+    if (!doc.HasMember("pids") || !doc["pids"].IsArray()) {
+        std::cerr << "[dev_trigger_pid_report_handle] Missing or invalid 'pids' array" << std::endl;
+        result = OLTIOT_COMM_PARM_ERROR;
+        oltiot_ack_resp(req, result);
+        return;
+    }
+
+    const auto& pids = doc["pids"].GetArray();
+    std::cout << "[dev_trigger_pid_report_handle] DID=" << did << " read count=" << pids.Size() << std::endl;
+
+
+    // ====================== 构造响应 JSON ======================
+    auto resp_params = std::make_shared<Document>();
+    resp_params->SetObject();
+    auto& alloc = resp_params->GetAllocator();
+
+    // 1️⃣ add did
+    Value did_val;
+    did_val.SetString(did.c_str(), alloc);
+    resp_params->AddMember("did", did_val, alloc);
+
+    // 2️⃣ build pids array
+    Value pids_arr(kArrayType);
+
+    for (const auto& item : pids) {
+        if (!item.HasMember("sid") || !item["sid"].IsInt() ||
+            !item.HasMember("pid") || !item["pid"].IsInt()) {
+            std::cerr << "[ReadPids] Skip invalid entry" << std::endl;
+            continue;
+        }
+
+        int sid = item["sid"].GetInt();
+        int pid = item["pid"].GetInt();
+
+        result = oltiot_trigger_pid_report(did, sid, pid);
+
+    }
+
+    
+    // ====================== 发送响应 ======================
+    oltiot_ack_resp(req, result);
+}
+
+void dev_force_del_handle(const oltiot_msg_req_t* req, void* arg) {
+    using namespace rapidjson;
+    std::cout << "[dev_force_del_handle] Callback called for method: " << req->method
+              << ", topic: " << req->topic << std::endl;
+
+    int result = OLTIOT_COMM_SUCCESS;
+
+    // 参数校验
+    if (!req || !req->params) {
+        std::cerr << "[dev_force_del_handle] Invalid request: params is null" << std::endl;
+        result = OLTIOT_COMM_PARM_ERROR;
+        oltiot_ack_resp(req, result);
+        return;
+    }
+
+    auto& doc = *req->params;
+
+    if (!doc.HasMember("devices") || !doc["devices"].IsArray()) {
+        std::cerr << "[dev_force_del_handle] Missing or invalid 'devices' array" << std::endl;
+        result = OLTIOT_COMM_PARM_ERROR;
+        oltiot_ack_resp(req, result);
+        return;
+    }
+    
+    const auto& devices = doc["devices"].GetArray();
+    for (const auto& item : devices) 
+    {
+        if (!item.IsString()) {
+            std::cerr << "[dev_force_del_handle] Invalid device entry (not string)" << std::endl;
+            continue;
+        }
+
+        std::string did = item.GetString();
+        std::cout << "[dev_force_del_handle] device = " << did << std::endl;
+        result = oltiot_dev_force_del_sub(did);
+    }
+
+    // ====================== 发送响应 ======================
+    oltiot_ack_resp(req, result);
+}
 
 // ===== 注册示例函数 =====
 void oltiot_devobj_register() {
@@ -642,6 +753,18 @@ void oltiot_devobj_register() {
     handle_reg.topic = "olt/receiver/" + oltiot_devobj_get_did();
     handle_reg.method = "Dev.GetTime";
     oltiot_msg_handle_reg(&handle_reg, get_time_stamp_handle, nullptr);
+
+    // 触发设备属性上报
+    memset(&handle_reg, 0, sizeof(oltiot_msg_reg_t));
+    handle_reg.topic = "olt/receiver/" + oltiot_devobj_get_did();
+    handle_reg.method = "Dev.TriggerPidReport";
+    oltiot_msg_handle_reg(&handle_reg, dev_trigger_pid_report_handle, nullptr);
+
+    // 强制删除子设备
+    memset(&handle_reg, 0, sizeof(oltiot_msg_reg_t));
+    handle_reg.topic = "olt/receiver/" + oltiot_devobj_get_did();
+    handle_reg.method = "Dev.ForceDelDevice";
+    oltiot_msg_handle_reg(&handle_reg, dev_force_del_handle, nullptr);
 
     std::cout << "[oltiot_devobj_register] All handlers registered." << std::endl;
 }
@@ -1005,4 +1128,18 @@ std::vector<dev_item_t> get_all_sub_dev_info()
 std::string oltiot_devobj_get_did()
 { 
     return "011025092402002F";
+}
+
+int oltiot_dev_force_del_sub(std::string did)
+{
+    std::cout << "[oltiot_dev_forcedel_sub] Delete Sub: DID=" << did << std::endl;
+    return OLTIOT_COMM_SUCCESS;
+}
+
+int oltiot_trigger_pid_report(std::string did, int sid, int pid)
+{
+    std::cout << "[oltiot_trigger_pid_report] Trigger PID Report: DID=" << did
+              << " SID=" << sid
+              << " PID=" << pid << std::endl;
+    return OLTIOT_COMM_SUCCESS;
 }
