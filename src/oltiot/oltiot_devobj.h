@@ -80,4 +80,5 @@ int oltiot_report_eids(const eid_item_t& eids);
 int oltiot_report_dev(const std::vector<dev_item_t>& devices);
 int oltiot_report_online(const std::vector<online_item_t>& devices);
 int oltiot_report_del_dev(const std::vector<did_item_t>& devices);
+int oltiot_report_upgrade_progress(std::string did, std::string mcu, int step, int progress);
 std::string oltiot_devobj_get_did();

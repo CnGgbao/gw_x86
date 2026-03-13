@@ -17,6 +17,8 @@ int oltiot_dev_gettime(long long timestamp);
 std::vector<dev_item_t> get_all_sub_dev_info();
 int oltiot_dev_force_del_sub(std::string did);
 int oltiot_trigger_pid_report(std::string did, int sid, int pid);
+int oltiot_dev_upgrade_sub(std::string did, std::string mcu, std::string version, std::string lowVersion, std::string fileName, std::string url, int fileSize, int checkCode);
+
 
 static std::string g_latest_join_seq;
 static std::mutex g_seq_mutex;
@@ -676,6 +678,77 @@ void dev_force_del_handle(const oltiot_msg_req_t* req, void* arg) {
     oltiot_ack_resp(req, result);
 }
 
+void dev_upgrade_handle(const oltiot_msg_req_t* req, void* arg)
+{
+    using namespace rapidjson;
+
+    std::cout << "[dev_upgrade_handle] Callback called for method: "
+              << req->method << ", topic: " << req->topic << std::endl;
+
+    int result = OLTIOT_COMM_SUCCESS;
+
+    // 参数校验
+    if (!req || !req->params)
+    {
+        std::cerr << "[dev_upgrade_handle] Invalid request: params is null" << std::endl;
+        result = OLTIOT_COMM_PARM_ERROR;
+        oltiot_ack_resp(req, result);
+        return;
+    }
+
+    auto& doc = *req->params;
+
+    // ================= 参数检查 =================
+    if (!doc.HasMember("did") || !doc["did"].IsArray())
+    {
+        std::cerr << "[dev_upgrade_handle] Missing or invalid 'did' array" << std::endl;
+        result = OLTIOT_COMM_PARM_ERROR;
+        oltiot_ack_resp(req, result);
+        return;
+    }
+
+    // 读取升级参数
+    std::string mcu        = doc.HasMember("mcu") ? doc["mcu"].GetString() : "";
+    std::string version    = doc.HasMember("version") ? doc["version"].GetString() : "";
+    std::string lowVersion = doc.HasMember("lowVersion") ? doc["lowVersion"].GetString() : "";
+    std::string fileName   = doc.HasMember("fileName") ? doc["fileName"].GetString() : "";
+    std::string url        = doc.HasMember("url") ? doc["url"].GetString() : "";
+
+    int fileSize  = doc.HasMember("fileSize") ? doc["fileSize"].GetInt() : 0;
+    int checkCode = doc.HasMember("checkCode") ? doc["checkCode"].GetInt() : 0;
+
+    // ================= 处理设备列表 =================
+    const auto& didArray = doc["did"].GetArray();
+
+    for (const auto& item : didArray)
+    {
+        if (!item.IsString())
+        {
+            std::cerr << "[dev_upgrade_handle] Invalid device entry (not string)" << std::endl;
+            continue;
+        }
+
+        std::string did = item.GetString();
+
+        std::cout << "[dev_upgrade_handle] device = " << did << std::endl;
+
+        // 调用升级接口
+        result = oltiot_dev_upgrade_sub(
+            did,
+            mcu,
+            version,
+            lowVersion,
+            fileName,
+            url,
+            fileSize,
+            checkCode
+        );
+    }
+
+    // ================= 发送响应 =================
+    oltiot_ack_resp(req, result);
+}
+
 // ===== 注册示例函数 =====
 void oltiot_devobj_register() {
     std::cout << "[oltiot_devobj_register] Registering OLTIOT device object handlers..." << std::endl;
@@ -765,6 +838,12 @@ void oltiot_devobj_register() {
     handle_reg.topic = "olt/receiver/" + oltiot_devobj_get_did();
     handle_reg.method = "Dev.ForceDelDevice";
     oltiot_msg_handle_reg(&handle_reg, dev_force_del_handle, nullptr);
+
+    // 平台向网关下发升级通知
+    memset(&handle_reg, 0, sizeof(oltiot_msg_reg_t));
+    handle_reg.topic = "olt/receiver/" + oltiot_devobj_get_did();
+    handle_reg.method = "Dev.Upgrade";
+    oltiot_msg_handle_reg(&handle_reg, dev_upgrade_handle, nullptr);
 
     std::cout << "[oltiot_devobj_register] All handlers registered." << std::endl;
 }
@@ -996,8 +1075,8 @@ int oltiot_report_online(const std::vector<online_item_t>& devices)
 
     doc.AddMember("devices", devices_arr, alloc);
 
-    // === 发送 ===
-    return oltiot_comm_send_guaranteed(req);
+        // === 发送 ===
+        return oltiot_comm_send_guaranteed(req);
 }
 
 
@@ -1033,6 +1112,33 @@ int oltiot_report_del_dev(const std::vector<did_item_t>& devices)
     }
 
     doc.AddMember("devices", devices_arr, alloc);
+
+    // === 发送 ===
+    return oltiot_comm_send_guaranteed(req);
+}
+
+int oltiot_report_upgrade_progress(std::string did, std::string mcu, int step, int progress)
+{
+    using namespace rapidjson;
+
+    oltiot_msg_req_t req= {};
+    req.method = "Dev.ReportProgress";
+    req.topic  = "olt/receiver/0001000000000000";
+    req.src    = oltiot_devobj_get_did();
+    req.dst    = "0001000000000000";
+    req.ver    = "V1.0";
+    req.seq    = generate_seq();
+
+    // === 创建 params 文档 ===
+    req.params = std::make_shared<Document>();
+    auto& doc = *req.params;
+    doc.SetObject();
+    auto& alloc = doc.GetAllocator();
+
+    doc.AddMember("did", Value(did.c_str(), alloc), alloc);
+    doc.AddMember("mcu", Value(mcu.c_str(), alloc), alloc);
+    doc.AddMember("step", step, alloc);
+    doc.AddMember("progress", progress, alloc);
 
     // === 发送 ===
     return oltiot_comm_send_guaranteed(req);
@@ -1141,5 +1247,18 @@ int oltiot_trigger_pid_report(std::string did, int sid, int pid)
     std::cout << "[oltiot_trigger_pid_report] Trigger PID Report: DID=" << did
               << " SID=" << sid
               << " PID=" << pid << std::endl;
+    return OLTIOT_COMM_SUCCESS;
+}
+
+int oltiot_dev_upgrade_sub(std::string did, std::string mcu, std::string version, std::string lowVersion, std::string fileName, std::string url, int fileSize, int checkCode)
+{
+    std::cout << "[oltiot_dev_upgrade_sub] Upgrade Sub: DID=" << did
+              << " MCU=" << mcu
+              << " Version=" << version
+              << " LowVersion=" << lowVersion
+              << " FileName=" << fileName
+              << " URL=" << url
+              << " FileSize=" << fileSize
+              << " CheckCode=" << checkCode << std::endl;
     return OLTIOT_COMM_SUCCESS;
 }

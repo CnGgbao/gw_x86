@@ -11,11 +11,11 @@
  * @return int 程序执行状态码，0表示正常退出
  */
 #define OLTIOT_SERVE_URI "iot.tck.com.cn:2085"
-#define OLT_CLIENT_ID "011025092402000A"
+#define OLT_CLIENT_ID "011025092402002F"
     // 初始化IOT模块
-#define OLT_TOPIC "olt/receiver/011025092402000A"
-#define OLT_USERNAME "WG0001:011025092402000A"
-#define OLT_PASSWORD "d52412de3456ad8f:131293"
+//#define OLT_TOPIC "olt/receiver/011025092402000A"
+#define OLT_USERNAME "WG0001:011025092402002F"
+#define OLT_PASSWORD "d52412de3456ad8f:886433"
     // 通过无限循环保持程序持续运行
     // 每隔10秒休眠一次，避免CPU资源过度占用
 #define OLTIOT_COMM_QOS 0
